@@ -135,7 +135,6 @@ function AdjustStockForm({
   const [saving, setSaving] = useState(false)
 
   const isStockCount = movementType === 'stock_count'
-  const selectedProduct = products.find((p) => p.id === productId)
 
   function handleProductChange(id: string) {
     setProductId(id)
