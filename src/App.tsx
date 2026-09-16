@@ -2,7 +2,8 @@ import { useEffect, useState, useRef } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import {
   LayoutGrid, ShoppingCart, Receipt, Package, ClipboardList,
-  Truck, Factory, Users, CreditCard, BarChart3, LogOut, MoreHorizontal, Search, X, Settings as SettingsIcon,
+  Truck, Factory, Users, CreditCard, BarChart3, LogOut, MoreHorizontal, Search, X,
+  Settings as SettingsIcon, FileBarChart,
 } from 'lucide-react'
 import { supabase } from './lib/supabaseClient'
 import Login from './components/Login'
@@ -17,6 +18,7 @@ import Reports from './components/Reports'
 import Customers from './components/Customers'
 import Expenses from './components/Expenses'
 import Settings from './components/Settings'
+import ZReport from './components/ZReport'
 
 type Profile = {
   id: string
@@ -27,7 +29,7 @@ type Profile = {
 
 type Page =
   | 'dashboard' | 'pos' | 'products' | 'suppliers' | 'purchases'
-  | 'sales' | 'inventory' | 'reports' | 'customers' | 'expenses' | 'settings'
+  | 'sales' | 'inventory' | 'reports' | 'customers' | 'expenses' | 'settings' | 'zreport'
 
 function App() {
   const [session, setSession] = useState<Session | null>(null)
@@ -113,6 +115,7 @@ function App() {
     { key: 'customers', label: 'Customers', icon: Users, show: true },
     { key: 'expenses', label: 'Expenses', icon: CreditCard, show: canManageExpenses },
     { key: 'reports', label: 'Reports', icon: BarChart3, show: canSeeReports },
+    { key: 'zreport', label: 'End of Day', icon: FileBarChart, show: canSeeReports },
     { key: 'settings', label: 'Settings', icon: SettingsIcon, show: isAdmin },
   ]
 
@@ -144,6 +147,8 @@ function App() {
         return <Expenses />
       case 'settings':
         return <Settings />
+      case 'zreport':
+        return <ZReport />
     }
   }
 

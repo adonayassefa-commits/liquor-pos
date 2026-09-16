@@ -1,5 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
+import JsBarcode from 'jsbarcode'
 import { supabase } from '../lib/supabaseClient'
+import { TableRowSkeleton } from './Skeleton'
 
 type Category = {
   id: string
@@ -32,6 +34,7 @@ export default function Products({ canEdit }: Props) {
   const [search, setSearch] = useState('')
   const [showForm, setShowForm] = useState(false)
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
+  const [printingProduct, setPrintingProduct] = useState<Product | null>(null)
 
   useEffect(() => {
     loadCategories()
@@ -72,6 +75,11 @@ export default function Products({ canEdit }: Props) {
     }
   }
 
+  // If a product has no barcode yet, generate one from its ID so it can still be printed
+  function ensureBarcodeValue(p: Product): string {
+    return p.barcode || p.sku || p.id.replace(/-/g, '').slice(0, 12).toUpperCase()
+  }
+
   const filtered = products.filter((p) =>
     p.name.toLowerCase().includes(search.toLowerCase()) ||
     p.sku?.toLowerCase().includes(search.toLowerCase()) ||
@@ -107,8 +115,27 @@ export default function Products({ canEdit }: Props) {
         className="w-full mb-4 px-3 py-2 rounded bg-[#2c2419] text-[#f2ece2] outline-none focus:ring-2 focus:ring-[#d4a24e]"
       />
 
-      {loading ? (
-        <p className="text-[#8a8177]">Loading products...</p>
+            {loading ? (
+        <div className="overflow-x-auto rounded-lg border border-[#33291f]">
+          <table className="w-full text-left text-[#f2ece2]">
+            <thead className="bg-[#2c2419] text-[#a89d8f] text-sm uppercase">
+              <tr>
+                <th className="px-4 py-3">Name</th>
+                <th className="px-4 py-3">SKU</th>
+                <th className="px-4 py-3">Category</th>
+                <th className="px-4 py-3">Cost</th>
+                <th className="px-4 py-3">Price</th>
+                <th className="px-4 py-3">Stock</th>
+                <th className="px-4 py-3">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <TableRowSkeleton columns={7} />
+              <TableRowSkeleton columns={7} />
+              <TableRowSkeleton columns={7} />
+            </tbody>
+          </table>
+        </div>
       ) : filtered.length === 0 ? (
         <p className="text-[#8a8177]">No products found.</p>
       ) : (
@@ -122,7 +149,7 @@ export default function Products({ canEdit }: Props) {
                 <th className="px-4 py-3">Cost</th>
                 <th className="px-4 py-3">Price</th>
                 <th className="px-4 py-3">Stock</th>
-                {canEdit && <th className="px-4 py-3">Actions</th>}
+                <th className="px-4 py-3">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -138,25 +165,33 @@ export default function Products({ canEdit }: Props) {
                       {p.current_stock}
                     </span>
                   </td>
-                  {canEdit && (
-                    <td className="px-4 py-3 space-x-2">
-                      <button
-                        onClick={() => {
-                          setEditingProduct(p)
-                          setShowForm(true)
-                        }}
-                        className="text-[#d4a24e] hover:underline"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => archiveProduct(p.id)}
-                        className="text-red-400 hover:underline"
-                      >
-                        Archive
-                      </button>
-                    </td>
-                  )}
+                  <td className="px-4 py-3 space-x-2 whitespace-nowrap">
+                    <button
+                      onClick={() => setPrintingProduct(p)}
+                      className="text-[#d4a24e] hover:underline"
+                    >
+                      Barcode
+                    </button>
+                    {canEdit && (
+                      <>
+                        <button
+                          onClick={() => {
+                            setEditingProduct(p)
+                            setShowForm(true)
+                          }}
+                          className="text-[#d4a24e] hover:underline"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => archiveProduct(p.id)}
+                          className="text-red-400 hover:underline"
+                        >
+                          Archive
+                        </button>
+                      </>
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -175,6 +210,57 @@ export default function Products({ canEdit }: Props) {
           }}
         />
       )}
+
+      {printingProduct && (
+        <BarcodeModal
+          product={printingProduct}
+          value={ensureBarcodeValue(printingProduct)}
+          onClose={() => setPrintingProduct(null)}
+        />
+      )}
+    </div>
+  )
+}
+
+function BarcodeModal({
+  product, value, onClose,
+}: { product: Product; value: string; onClose: () => void }) {
+  const svgRef = useRef<SVGSVGElement>(null)
+
+  useEffect(() => {
+    if (svgRef.current) {
+      JsBarcode(svgRef.current, value, {
+        format: 'CODE128',
+        width: 2,
+        height: 60,
+        displayValue: true,
+        fontSize: 14,
+        margin: 10,
+      })
+    }
+  }, [value])
+
+  function handlePrint() {
+    window.print()
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
+      <div className="bg-white p-6 rounded-lg w-full max-w-sm text-center print:shadow-none">
+        <p className="text-black font-semibold mb-2">{product.name}</p>
+        <svg ref={svgRef} className="mx-auto" />
+        <div className="flex justify-center gap-2 mt-4 print:hidden">
+          <button onClick={onClose} className="px-4 py-2 rounded text-gray-600 hover:bg-gray-100">
+            Close
+          </button>
+          <button
+            onClick={handlePrint}
+            className="px-4 py-2 rounded bg-[#d4a24e] hover:bg-[#c69144] text-[#1c1815] font-semibold"
+          >
+            Print
+          </button>
+        </div>
+      </div>
     </div>
   )
 }
@@ -264,6 +350,7 @@ function ProductForm({
             <input
               value={barcode}
               onChange={(e) => setBarcode(e.target.value)}
+              placeholder="Leave blank to auto-generate"
               className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]"
             />
           </div>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
+import { Skeleton, StatCardSkeleton } from './Skeleton'
 
 type Stats = {
   todaySales: number
@@ -109,10 +110,22 @@ export default function Dashboard() {
     setLoading(false)
   }
 
-  if (loading || !stats) {
+   if (loading || !stats) {
     return (
-      <div className="min-h-screen bg-[#1c1815] p-6">
-        <p className="text-[#8a8177]">Loading dashboard...</p>
+      <div className="min-h-screen bg-[#1c1815] p-6 space-y-8">
+        <Skeleton className="h-8 w-48" />
+        <div>
+          <Skeleton className="h-4 w-20 mb-3" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <StatCardSkeleton /><StatCardSkeleton /><StatCardSkeleton /><StatCardSkeleton />
+          </div>
+        </div>
+        <div>
+          <Skeleton className="h-4 w-24 mb-3" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <StatCardSkeleton /><StatCardSkeleton /><StatCardSkeleton /><StatCardSkeleton />
+          </div>
+        </div>
       </div>
     )
   }
