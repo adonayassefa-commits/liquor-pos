@@ -43,7 +43,6 @@ export default function Reports() {
     const startISO = new Date(startDate + 'T00:00:00').toISOString()
     const endISO = new Date(endDate + 'T23:59:59').toISOString()
 
-    // Sale items joined with sale date + cashier, within range
     const { data: items } = await supabase
       .from('sale_items')
       .select(`
@@ -84,7 +83,6 @@ export default function Reports() {
       cashierTotals[cName].revenue += lineRevenue
     }
 
-    // Count distinct transactions per cashier + overall
     const { data: salesInRange } = await supabase
       .from('sales')
       .select('id, cashier_id, profiles(full_name, email)')
@@ -110,7 +108,6 @@ export default function Reports() {
     setByProduct(Object.values(productTotals).sort((a, b) => b.revenue - a.revenue))
     setByCashier(Object.values(cashierTotals).sort((a, b) => b.revenue - a.revenue))
 
-    // Inventory valuation (current, not date-filtered — it's a point-in-time snapshot)
     const { data: products } = await supabase
       .from('products')
       .select('current_stock, cost_price, selling_price')
@@ -137,24 +134,24 @@ export default function Reports() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 p-6 space-y-8">
-      <h1 className="text-2xl font-bold text-white">Reports</h1>
+    <div className="min-h-screen bg-[#1c1815] p-6 space-y-8">
+      <h1 className="text-2xl font-bold text-[#f2ece2]">Reports</h1>
 
-      <div className="flex items-end gap-3 bg-slate-800 p-4 rounded-lg">
+      <div className="flex flex-wrap items-end gap-3 bg-[#2c2419] p-4 rounded-lg">
         <div>
-          <label className="block text-sm text-slate-300 mb-1">From</label>
+          <label className="block text-sm text-[#a89d8f] mb-1">From</label>
           <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)}
-            className="px-3 py-2 rounded bg-slate-700 text-white" />
+            className="px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]" />
         </div>
         <div>
-          <label className="block text-sm text-slate-300 mb-1">To</label>
+          <label className="block text-sm text-[#a89d8f] mb-1">To</label>
           <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)}
-            className="px-3 py-2 rounded bg-slate-700 text-white" />
+            className="px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]" />
         </div>
         <button
           onClick={runReport}
           disabled={loading}
-          className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded font-semibold disabled:opacity-50"
+          className="bg-[#d4a24e] hover:bg-[#c69144] text-[#1c1815] px-4 py-2 rounded font-semibold disabled:opacity-50"
         >
           {loading ? 'Running...' : 'Run Report'}
         </button>
@@ -163,8 +160,8 @@ export default function Reports() {
       {summary && (
         <>
           <section>
-            <h2 className="text-slate-400 text-sm uppercase font-semibold mb-3">Profit Summary</h2>
-            <div className="grid grid-cols-5 gap-4">
+            <h2 className="text-[#8a8177] text-sm uppercase font-semibold mb-3">Profit Summary</h2>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
               <Stat label="Revenue" value={summary.revenue.toFixed(2)} />
               <Stat label="COGS" value={summary.cogs.toFixed(2)} />
               <Stat label="Gross Profit" value={summary.grossProfit.toFixed(2)} accent />
@@ -175,7 +172,7 @@ export default function Reports() {
 
           {inventoryValuation && (
             <section>
-              <h2 className="text-slate-400 text-sm uppercase font-semibold mb-3">
+              <h2 className="text-[#8a8177] text-sm uppercase font-semibold mb-3">
                 Current Inventory Valuation
               </h2>
               <div className="grid grid-cols-3 gap-4">
@@ -188,7 +185,7 @@ export default function Reports() {
 
           <section>
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-white font-semibold">Sales by Product</h2>
+              <h2 className="text-[#f2ece2] font-semibold">Sales by Product</h2>
               <button
                 onClick={() =>
                   exportCSV(
@@ -197,14 +194,14 @@ export default function Reports() {
                     byProduct.map((r) => [r.product_name, r.quantity_sold, r.revenue.toFixed(2), r.cost.toFixed(2), r.profit.toFixed(2)])
                   )
                 }
-                className="text-purple-400 text-sm hover:underline"
+                className="text-[#d4a24e] text-sm hover:underline"
               >
                 Export CSV
               </button>
             </div>
-            <div className="overflow-x-auto rounded-lg border border-slate-700">
-              <table className="w-full text-left text-white text-sm">
-                <thead className="bg-slate-800 text-slate-300 uppercase">
+            <div className="overflow-x-auto rounded-lg border border-[#33291f]">
+              <table className="w-full text-left text-[#f2ece2] text-sm">
+                <thead className="bg-[#2c2419] text-[#a89d8f] uppercase">
                   <tr>
                     <th className="px-4 py-2">Product</th>
                     <th className="px-4 py-2">Qty Sold</th>
@@ -215,7 +212,7 @@ export default function Reports() {
                 </thead>
                 <tbody>
                   {byProduct.map((r, i) => (
-                    <tr key={i} className="border-t border-slate-700">
+                    <tr key={i} className="border-t border-[#33291f]">
                       <td className="px-4 py-2">{r.product_name}</td>
                       <td className="px-4 py-2">{r.quantity_sold}</td>
                       <td className="px-4 py-2">{r.revenue.toFixed(2)}</td>
@@ -224,7 +221,7 @@ export default function Reports() {
                     </tr>
                   ))}
                   {byProduct.length === 0 && (
-                    <tr><td colSpan={5} className="px-4 py-4 text-slate-500">No sales in this period</td></tr>
+                    <tr><td colSpan={5} className="px-4 py-4 text-[#8a8177]">No sales in this period</td></tr>
                   )}
                 </tbody>
               </table>
@@ -233,7 +230,7 @@ export default function Reports() {
 
           <section>
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-white font-semibold">Sales by Cashier</h2>
+              <h2 className="text-[#f2ece2] font-semibold">Sales by Cashier</h2>
               <button
                 onClick={() =>
                   exportCSV(
@@ -242,14 +239,14 @@ export default function Reports() {
                     byCashier.map((r) => [r.cashier_name, r.transactions, r.revenue.toFixed(2)])
                   )
                 }
-                className="text-purple-400 text-sm hover:underline"
+                className="text-[#d4a24e] text-sm hover:underline"
               >
                 Export CSV
               </button>
             </div>
-            <div className="overflow-x-auto rounded-lg border border-slate-700">
-              <table className="w-full text-left text-white text-sm">
-                <thead className="bg-slate-800 text-slate-300 uppercase">
+            <div className="overflow-x-auto rounded-lg border border-[#33291f]">
+              <table className="w-full text-left text-[#f2ece2] text-sm">
+                <thead className="bg-[#2c2419] text-[#a89d8f] uppercase">
                   <tr>
                     <th className="px-4 py-2">Cashier</th>
                     <th className="px-4 py-2">Transactions</th>
@@ -258,14 +255,14 @@ export default function Reports() {
                 </thead>
                 <tbody>
                   {byCashier.map((r, i) => (
-                    <tr key={i} className="border-t border-slate-700">
+                    <tr key={i} className="border-t border-[#33291f]">
                       <td className="px-4 py-2">{r.cashier_name}</td>
                       <td className="px-4 py-2">{r.transactions}</td>
                       <td className="px-4 py-2">{r.revenue.toFixed(2)}</td>
                     </tr>
                   ))}
                   {byCashier.length === 0 && (
-                    <tr><td colSpan={3} className="px-4 py-4 text-slate-500">No sales in this period</td></tr>
+                    <tr><td colSpan={3} className="px-4 py-4 text-[#8a8177]">No sales in this period</td></tr>
                   )}
                 </tbody>
               </table>
@@ -275,7 +272,7 @@ export default function Reports() {
       )}
 
       {!summary && !loading && (
-        <p className="text-slate-500">Select a date range and click "Run Report" to see results.</p>
+        <p className="text-[#8a8177]">Select a date range and click "Run Report" to see results.</p>
       )}
     </div>
   )
@@ -283,9 +280,9 @@ export default function Reports() {
 
 function Stat({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
   return (
-    <div className="bg-slate-800 rounded-lg p-4">
-      <p className="text-slate-400 text-xs uppercase mb-1">{label}</p>
-      <p className={`text-2xl font-bold ${accent ? 'text-purple-400' : 'text-white'}`}>{value}</p>
+    <div className="bg-[#2c2419] rounded-lg p-4">
+      <p className="text-[#8a8177] text-xs uppercase mb-1">{label}</p>
+      <p className={`text-2xl font-bold ${accent ? 'text-[#d4a24e]' : 'text-[#f2ece2]'}`}>{value}</p>
     </div>
   )
 }

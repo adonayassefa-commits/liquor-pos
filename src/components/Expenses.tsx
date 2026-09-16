@@ -52,30 +52,30 @@ export default function Expenses() {
     .reduce((sum, e) => sum + Number(e.amount), 0)
 
   return (
-    <div className="min-h-screen bg-slate-900 p-6">
+    <div className="min-h-screen bg-[#1c1815] p-6">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-white">Expenses</h1>
+        <h1 className="text-2xl font-bold text-[#f2ece2]">Expenses</h1>
         <button
           onClick={() => setShowForm(true)}
-          className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded font-semibold"
+          className="bg-[#d4a24e] hover:bg-[#c69144] text-[#1c1815] px-4 py-2 rounded font-semibold"
         >
           + Add Expense
         </button>
       </div>
 
-      <div className="bg-slate-800 rounded-lg p-4 mb-6 inline-block">
-        <p className="text-slate-400 text-xs uppercase">This Month</p>
-        <p className="text-2xl font-bold text-white">{totalThisMonth.toFixed(2)}</p>
+      <div className="bg-[#2c2419] rounded-lg p-4 mb-6 inline-block">
+        <p className="text-[#8a8177] text-xs uppercase">This Month</p>
+        <p className="text-2xl font-bold text-[#f2ece2]">{totalThisMonth.toFixed(2)}</p>
       </div>
 
       {loading ? (
-        <p className="text-slate-400">Loading...</p>
+        <p className="text-[#8a8177]">Loading...</p>
       ) : expenses.length === 0 ? (
-        <p className="text-slate-400">No expenses recorded yet.</p>
+        <p className="text-[#8a8177]">No expenses recorded yet.</p>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-slate-700">
-          <table className="w-full text-left text-white text-sm">
-            <thead className="bg-slate-800 text-slate-300 uppercase">
+        <div className="overflow-x-auto rounded-lg border border-[#33291f]">
+          <table className="w-full text-left text-[#f2ece2] text-sm">
+            <thead className="bg-[#2c2419] text-[#a89d8f] uppercase">
               <tr>
                 <th className="px-4 py-3">Date</th>
                 <th className="px-4 py-3">Category</th>
@@ -87,13 +87,13 @@ export default function Expenses() {
             </thead>
             <tbody>
               {expenses.map((e) => (
-                <tr key={e.id} className="border-t border-slate-700 hover:bg-slate-800/50">
-                  <td className="px-4 py-3 text-slate-400">{e.expense_date}</td>
+                <tr key={e.id} className="border-t border-[#33291f] hover:bg-[#2c2419]/50">
+                  <td className="px-4 py-3 text-[#8a8177]">{e.expense_date}</td>
                   <td className="px-4 py-3">{e.expense_categories?.name ?? '—'}</td>
                   <td className="px-4 py-3">{e.description ?? '—'}</td>
                   <td className="px-4 py-3 font-semibold">{Number(e.amount).toFixed(2)}</td>
-                  <td className="px-4 py-3 text-slate-400">{e.payment_methods?.name ?? '—'}</td>
-                  <td className="px-4 py-3 text-slate-400">{e.profiles?.full_name ?? e.profiles?.email ?? '—'}</td>
+                  <td className="px-4 py-3 text-[#8a8177]">{e.payment_methods?.name ?? '—'}</td>
+                  <td className="px-4 py-3 text-[#8a8177]">{e.profiles?.full_name ?? e.profiles?.email ?? '—'}</td>
                 </tr>
               ))}
             </tbody>
@@ -152,62 +152,62 @@ function ExpenseForm({
 
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
-      <form onSubmit={handleSubmit} className="bg-slate-800 p-6 rounded-lg w-full max-w-md space-y-3">
-        <h2 className="text-xl font-bold text-white mb-2">Add Expense</h2>
+      <form onSubmit={handleSubmit} className="bg-[#2c2419] p-6 rounded-lg w-full max-w-md space-y-3">
+        <h2 className="text-xl font-bold text-[#f2ece2] mb-2">Add Expense</h2>
 
         <div>
-          <label className="block text-sm text-slate-300 mb-1">Category</label>
+          <label className="block text-sm text-[#a89d8f] mb-1">Category</label>
           <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)}
-            className="w-full px-3 py-2 rounded bg-slate-700 text-white">
+            className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]">
             <option value="">— Select —</option>
             {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
         </div>
 
         <div>
-          <label className="block text-sm text-slate-300 mb-1">Description</label>
+          <label className="block text-sm text-[#a89d8f] mb-1">Description</label>
           <input value={description} onChange={(e) => setDescription(e.target.value)}
-            className="w-full px-3 py-2 rounded bg-slate-700 text-white" />
+            className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]" />
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm text-slate-300 mb-1">Amount *</label>
+            <label className="block text-sm text-[#a89d8f] mb-1">Amount *</label>
             <input required type="number" step="0.01" value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              className="w-full px-3 py-2 rounded bg-slate-700 text-white" />
+              className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]" />
           </div>
           <div>
-            <label className="block text-sm text-slate-300 mb-1">Date *</label>
+            <label className="block text-sm text-[#a89d8f] mb-1">Date *</label>
             <input required type="date" value={expenseDate}
               onChange={(e) => setExpenseDate(e.target.value)}
-              className="w-full px-3 py-2 rounded bg-slate-700 text-white" />
+              className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]" />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm text-slate-300 mb-1">Payment Method</label>
+          <label className="block text-sm text-[#a89d8f] mb-1">Payment Method</label>
           <select value={paymentMethodId} onChange={(e) => setPaymentMethodId(e.target.value)}
-            className="w-full px-3 py-2 rounded bg-slate-700 text-white">
+            className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]">
             <option value="">— Select —</option>
             {paymentMethods.map((pm) => <option key={pm.id} value={pm.id}>{pm.name}</option>)}
           </select>
         </div>
 
         <div>
-          <label className="block text-sm text-slate-300 mb-1">Notes</label>
+          <label className="block text-sm text-[#a89d8f] mb-1">Notes</label>
           <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2}
-            className="w-full px-3 py-2 rounded bg-slate-700 text-white" />
+            className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]" />
         </div>
 
         {error && <p className="text-red-400 text-sm">{error}</p>}
 
         <div className="flex justify-end gap-2 pt-2">
-          <button type="button" onClick={onClose} className="px-4 py-2 rounded text-slate-300 hover:bg-slate-700">
+          <button type="button" onClick={onClose} className="px-4 py-2 rounded text-[#a89d8f] hover:bg-[#3a2f22]">
             Cancel
           </button>
           <button type="submit" disabled={saving}
-            className="px-4 py-2 rounded bg-purple-600 hover:bg-purple-700 text-white font-semibold disabled:opacity-50">
+            className="px-4 py-2 rounded bg-[#d4a24e] hover:bg-[#c69144] text-[#1c1815] font-semibold disabled:opacity-50">
             {saving ? 'Saving...' : 'Save'}
           </button>
         </div>

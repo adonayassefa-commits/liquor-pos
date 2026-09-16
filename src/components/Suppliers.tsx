@@ -1,322 +1,178 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
 
-type Sale = {
+type Supplier = {
   id: string
-  receipt_number: string
-  total: number
-  amount_paid: number
-  change_due: number
-  status: string
-  created_at: string
-  profiles: { full_name: string | null; email: string } | null
+  name: string
+  contact_person: string | null
+  phone: string | null
+  email: string | null
+  address: string | null
+  payment_terms: string | null
+  is_active: boolean
 }
 
-type SaleItem = {
-  id: string
-  quantity: number
-  unit_price: number
-  unit_cost_at_sale: number
-  line_total: number
-  product_id: string
-  products: { name: string } | null
-}
-
-export default function Sales() {
-  const [sales, setSales] = useState<Sale[]>([])
+export default function Suppliers() {
+  const [suppliers, setSuppliers] = useState<Supplier[]>([])
   const [loading, setLoading] = useState(true)
-  const [search, setSearch] = useState('')
-  const [selectedSale, setSelectedSale] = useState<Sale | null>(null)
-  const [saleItems, setSaleItems] = useState<SaleItem[]>([])
-  const [showReturnForm, setShowReturnForm] = useState(false)
+  const [showForm, setShowForm] = useState(false)
+  const [editing, setEditing] = useState<Supplier | null>(null)
 
   useEffect(() => {
-    loadSales()
+    load()
   }, [])
 
-  async function loadSales() {
+  async function load() {
     setLoading(true)
     const { data } = await supabase
-      .from('sales')
-      .select('id, receipt_number, total, amount_paid, change_due, status, created_at, profiles(full_name, email)')
-      .order('created_at', { ascending: false })
-      .limit(100)
-    setSales((data as any) ?? [])
+      .from('suppliers')
+      .select('*')
+      .eq('is_active', true)
+      .order('name')
+    setSuppliers(data ?? [])
     setLoading(false)
   }
 
-  async function viewSale(sale: Sale) {
-    setSelectedSale(sale)
-    setShowReturnForm(false)
-    const { data } = await supabase
-      .from('sale_items')
-      .select('id, quantity, unit_price, unit_cost_at_sale, line_total, product_id, products(name)')
-      .eq('sale_id', sale.id)
-    setSaleItems((data as any) ?? [])
-  }
-
-  const filtered = sales.filter(
-    (s) =>
-      s.receipt_number.toLowerCase().includes(search.toLowerCase()) ||
-      s.profiles?.full_name?.toLowerCase().includes(search.toLowerCase()) ||
-      s.profiles?.email?.toLowerCase().includes(search.toLowerCase())
-  )
-
   return (
-    <div className="min-h-screen bg-slate-900 p-6">
-      <h1 className="text-2xl font-bold text-white mb-6">Sales History</h1>
-
-      <input
-        type="text"
-        placeholder="Search by receipt number or cashier..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="w-full mb-4 px-3 py-2 rounded bg-slate-800 text-white outline-none focus:ring-2 focus:ring-purple-500"
-      />
+    <div className="min-h-screen bg-[#1c1815] p-6">
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold text-[#f2ece2]">Suppliers</h1>
+        <button
+          onClick={() => { setEditing(null); setShowForm(true) }}
+          className="bg-[#d4a24e] hover:bg-[#c69144] text-[#1c1815] px-4 py-2 rounded font-semibold"
+        >
+          + Add Supplier
+        </button>
+      </div>
 
       {loading ? (
-        <p className="text-slate-400">Loading...</p>
-      ) : filtered.length === 0 ? (
-        <p className="text-slate-400">No sales found.</p>
+        <p className="text-[#8a8177]">Loading...</p>
+      ) : suppliers.length === 0 ? (
+        <p className="text-[#8a8177]">No suppliers yet.</p>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-slate-700">
-          <table className="w-full text-left text-white">
-            <thead className="bg-slate-800 text-slate-300 text-sm uppercase">
-              <tr>
-                <th className="px-4 py-3">Receipt #</th>
-                <th className="px-4 py-3">Date</th>
-                <th className="px-4 py-3">Cashier</th>
-                <th className="px-4 py-3">Total</th>
-                <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((s) => (
-                <tr key={s.id} className="border-t border-slate-700 hover:bg-slate-800/50">
-                  <td className="px-4 py-3 font-mono text-sm">{s.receipt_number}</td>
-                  <td className="px-4 py-3 text-slate-400 text-sm">
-                    {new Date(s.created_at).toLocaleString()}
-                  </td>
-                  <td className="px-4 py-3">{s.profiles?.full_name ?? s.profiles?.email ?? '—'}</td>
-                  <td className="px-4 py-3">{s.total.toFixed(2)}</td>
-                  <td className="px-4 py-3">
-                    <span
-                      className={
-                        s.status === 'completed'
-                          ? 'text-green-400'
-                          : s.status === 'returned'
-                          ? 'text-red-400'
-                          : 'text-yellow-400'
-                      }
-                    >
-                      {s.status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <button onClick={() => viewSale(s)} className="text-purple-400 hover:underline text-sm">
-                      View
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {selectedSale && !showReturnForm && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
-          <div className="bg-slate-800 p-6 rounded-lg w-full max-w-lg">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h2 className="text-xl font-bold text-white">{selectedSale.receipt_number}</h2>
-                <p className="text-slate-400 text-sm">
-                  {new Date(selectedSale.created_at).toLocaleString()} ·{' '}
-                  {selectedSale.profiles?.full_name ?? selectedSale.profiles?.email}
-                </p>
-              </div>
-              <button onClick={() => setSelectedSale(null)} className="text-slate-400 hover:text-white text-xl">
-                ✕
-              </button>
-            </div>
-
-            <table className="w-full text-white text-sm mb-4">
-              <thead className="text-slate-400 text-left">
-                <tr>
-                  <th className="pb-2">Product</th>
-                  <th className="pb-2">Qty</th>
-                  <th className="pb-2">Price</th>
-                  <th className="pb-2">Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                {saleItems.map((item) => (
-                  <tr key={item.id} className="border-t border-slate-700">
-                    <td className="py-2">{item.products?.name}</td>
-                    <td className="py-2">{item.quantity}</td>
-                    <td className="py-2">{item.unit_price.toFixed(2)}</td>
-                    <td className="py-2">{item.line_total.toFixed(2)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-
-            <div className="border-t border-slate-700 pt-3 space-y-1 text-right mb-4">
-              <p className="text-white font-bold text-lg">Total: {selectedSale.total.toFixed(2)}</p>
-              <p className="text-slate-400 text-sm">Paid: {selectedSale.amount_paid.toFixed(2)}</p>
-              <p className="text-slate-400 text-sm">Change: {selectedSale.change_due.toFixed(2)}</p>
-            </div>
-
-            <div className="flex gap-2">
-              <button
-                onClick={() => window.print()}
-                className="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-2 rounded font-semibold"
-              >
-                Print Receipt
-              </button>
-              {selectedSale.status === 'completed' && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {suppliers.map((s) => (
+            <div key={s.id} className="bg-[#2c2419] p-4 rounded-lg border border-[#33291f]">
+              <div className="flex justify-between items-start">
+                <h3 className="text-[#f2ece2] font-bold">{s.name}</h3>
                 <button
-                  onClick={() => setShowReturnForm(true)}
-                  className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded font-semibold"
+                  onClick={() => { setEditing(s); setShowForm(true) }}
+                  className="text-[#d4a24e] text-sm hover:underline"
                 >
-                  Process Return
+                  Edit
                 </button>
-              )}
+              </div>
+              {s.contact_person && <p className="text-[#8a8177] text-sm">Contact: {s.contact_person}</p>}
+              {s.phone && <p className="text-[#8a8177] text-sm">Phone: {s.phone}</p>}
+              {s.email && <p className="text-[#8a8177] text-sm">Email: {s.email}</p>}
+              {s.payment_terms && <p className="text-[#8a8177] text-sm">Terms: {s.payment_terms}</p>}
             </div>
-          </div>
+          ))}
         </div>
       )}
 
-      {selectedSale && showReturnForm && (
-        <ReturnForm
-          sale={selectedSale}
-          saleItems={saleItems}
-          onClose={() => setShowReturnForm(false)}
-          onDone={() => {
-            setShowReturnForm(false)
-            setSelectedSale(null)
-            loadSales()
-          }}
+      {showForm && (
+        <SupplierForm
+          supplier={editing}
+          onClose={() => setShowForm(false)}
+          onSaved={() => { setShowForm(false); load() }}
         />
       )}
     </div>
   )
 }
 
-function ReturnForm({
-  sale, saleItems, onClose, onDone,
-}: { sale: Sale; saleItems: SaleItem[]; onClose: () => void; onDone: () => void }) {
-  const [quantities, setQuantities] = useState<Record<string, number>>({})
-  const [reason, setReason] = useState('')
-  const [error, setError] = useState('')
+function SupplierForm({
+  supplier, onClose, onSaved,
+}: { supplier: Supplier | null; onClose: () => void; onSaved: () => void }) {
+  const [name, setName] = useState(supplier?.name ?? '')
+  const [contactPerson, setContactPerson] = useState(supplier?.contact_person ?? '')
+  const [phone, setPhone] = useState(supplier?.phone ?? '')
+  const [email, setEmail] = useState(supplier?.email ?? '')
+  const [address, setAddress] = useState(supplier?.address ?? '')
+  const [paymentTerms, setPaymentTerms] = useState(supplier?.payment_terms ?? '')
   const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
 
-  function setQty(saleItemId: string, qty: number, max: number) {
-    const clamped = Math.max(0, Math.min(qty, max))
-    setQuantities((prev) => ({ ...prev, [saleItemId]: clamped }))
-  }
-
-  const itemsToReturn = saleItems
-    .filter((item) => (quantities[item.id] ?? 0) > 0)
-    .map((item) => {
-      const qty = quantities[item.id]
-      return {
-        sale_item_id: item.id,
-        product_id: item.product_id,
-        quantity: qty,
-        refund_amount: qty * item.unit_price,
-      }
-    })
-
-  const totalRefund = itemsToReturn.reduce((sum, i) => sum + i.refund_amount, 0)
-
-  async function handleSubmit() {
-    setError('')
-    if (itemsToReturn.length === 0) {
-      setError('Select at least one item to return')
-      return
-    }
-    if (!reason.trim()) {
-      setError('A reason is required')
-      return
-    }
-
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
     setSaving(true)
-    const { error } = await supabase.rpc('process_return', {
-      p_sale_id: sale.id,
-      p_items: itemsToReturn,
-      p_reason: reason,
-    })
+    setError('')
+
+    const payload = {
+      name,
+      contact_person: contactPerson || null,
+      phone: phone || null,
+      email: email || null,
+      address: address || null,
+      payment_terms: paymentTerms || null,
+    }
+
+    const { error } = supplier
+      ? await supabase.from('suppliers').update(payload).eq('id', supplier.id)
+      : await supabase.from('suppliers').insert(payload)
 
     if (error) {
       setError(error.message)
       setSaving(false)
     } else {
-      onDone()
+      onSaved()
     }
   }
 
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
-      <div className="bg-slate-800 p-6 rounded-lg w-full max-w-lg space-y-3">
-        <h2 className="text-xl font-bold text-white">Process Return — {sale.receipt_number}</h2>
-
-        <table className="w-full text-white text-sm">
-          <thead className="text-slate-400 text-left">
-            <tr>
-              <th className="pb-2">Product</th>
-              <th className="pb-2">Purchased</th>
-              <th className="pb-2">Return Qty</th>
-            </tr>
-          </thead>
-          <tbody>
-            {saleItems.map((item) => (
-              <tr key={item.id} className="border-t border-slate-700">
-                <td className="py-2">{item.products?.name}</td>
-                <td className="py-2">{item.quantity}</td>
-                <td className="py-2">
-                  <input
-                    type="number"
-                    min={0}
-                    max={item.quantity}
-                    value={quantities[item.id] ?? 0}
-                    onChange={(e) => setQty(item.id, parseInt(e.target.value) || 0, item.quantity)}
-                    className="w-16 px-2 py-1 rounded bg-slate-700 text-white"
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <form onSubmit={handleSubmit} className="bg-[#2c2419] p-6 rounded-lg w-full max-w-md space-y-3">
+        <h2 className="text-xl font-bold text-[#f2ece2] mb-2">
+          {supplier ? 'Edit Supplier' : 'Add Supplier'}
+        </h2>
 
         <div>
-          <label className="block text-sm text-slate-300 mb-1">Reason *</label>
-          <textarea
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-            rows={2}
-            className="w-full px-3 py-2 rounded bg-slate-700 text-white"
-          />
+          <label className="block text-sm text-[#a89d8f] mb-1">Name *</label>
+          <input required value={name} onChange={(e) => setName(e.target.value)}
+            className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]" />
         </div>
-
-        <p className="text-white font-bold text-right">Refund Total: {totalRefund.toFixed(2)}</p>
+        <div>
+          <label className="block text-sm text-[#a89d8f] mb-1">Contact Person</label>
+          <input value={contactPerson} onChange={(e) => setContactPerson(e.target.value)}
+            className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]" />
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-sm text-[#a89d8f] mb-1">Phone</label>
+            <input value={phone} onChange={(e) => setPhone(e.target.value)}
+              className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]" />
+          </div>
+          <div>
+            <label className="block text-sm text-[#a89d8f] mb-1">Email</label>
+            <input value={email} onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]" />
+          </div>
+        </div>
+        <div>
+          <label className="block text-sm text-[#a89d8f] mb-1">Address</label>
+          <input value={address} onChange={(e) => setAddress(e.target.value)}
+            className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]" />
+        </div>
+        <div>
+          <label className="block text-sm text-[#a89d8f] mb-1">Payment Terms</label>
+          <input value={paymentTerms} onChange={(e) => setPaymentTerms(e.target.value)}
+            placeholder="e.g. Net 30"
+            className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]" />
+        </div>
 
         {error && <p className="text-red-400 text-sm">{error}</p>}
 
-        <div className="flex justify-end gap-2">
-          <button onClick={onClose} className="px-4 py-2 rounded text-slate-300 hover:bg-slate-700">
+        <div className="flex justify-end gap-2 pt-2">
+          <button type="button" onClick={onClose} className="px-4 py-2 rounded text-[#a89d8f] hover:bg-[#3a2f22]">
             Cancel
           </button>
-          <button
-            onClick={handleSubmit}
-            disabled={saving}
-            className="px-4 py-2 rounded bg-red-600 hover:bg-red-700 text-white font-semibold disabled:opacity-50"
-          >
-            {saving ? 'Processing...' : 'Confirm Return'}
+          <button type="submit" disabled={saving}
+            className="px-4 py-2 rounded bg-[#d4a24e] hover:bg-[#c69144] text-[#1c1815] font-semibold disabled:opacity-50">
+            {saving ? 'Saving...' : 'Save'}
           </button>
         </div>
-      </div>
+      </form>
     </div>
   )
 }

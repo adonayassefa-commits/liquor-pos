@@ -57,7 +57,6 @@ export default function POS() {
     if (data && data.length > 0) setSelectedPaymentId(data[0].id)
   }
 
-  // Handles both typed search AND barcode scanner input (scanner types fast + Enter)
   function handleSearchKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter') {
       const match = products.find(
@@ -114,7 +113,7 @@ export default function POS() {
   }
 
   const subtotal = cart.reduce((sum, item) => sum + item.product.selling_price * item.quantity, 0)
-  const total = subtotal // tax/discount added later in Settings step
+  const total = subtotal
   const paid = parseFloat(amountPaid) || 0
   const changeDue = paid - total
 
@@ -157,7 +156,7 @@ export default function POS() {
     setSuccess(`Sale completed! ID: ${data}`)
     setCart([])
     setAmountPaid('')
-    loadProducts() // refresh stock numbers
+    loadProducts()
     setProcessing(false)
     searchInputRef.current?.focus()
   }
@@ -172,10 +171,9 @@ export default function POS() {
     : []
 
   return (
-    <div className="min-h-screen bg-slate-900 p-6 grid grid-cols-3 gap-6">
-      {/* Left: search + product results */}
-      <div className="col-span-2">
-        <h1 className="text-2xl font-bold text-white mb-4">Point of Sale</h1>
+    <div className="min-h-screen bg-[#1c1815] p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="md:col-span-2">
+        <h1 className="text-2xl font-bold text-[#f2ece2] mb-4">Point of Sale</h1>
         <input
           ref={searchInputRef}
           type="text"
@@ -183,11 +181,11 @@ export default function POS() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           onKeyDown={handleSearchKeyDown}
-          className="w-full mb-4 px-3 py-3 rounded bg-slate-800 text-white text-lg outline-none focus:ring-2 focus:ring-purple-500"
+          className="w-full mb-4 px-3 py-3 rounded bg-[#2c2419] text-[#f2ece2] text-lg outline-none focus:ring-2 focus:ring-[#d4a24e]"
         />
 
         {search && (
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {filtered.map((p) => (
               <button
                 key={p.id}
@@ -196,45 +194,44 @@ export default function POS() {
                   setSearch('')
                   searchInputRef.current?.focus()
                 }}
-                className="bg-slate-800 hover:bg-slate-700 text-left p-3 rounded border border-slate-700"
+                className="bg-[#2c2419] hover:bg-[#3a2f22] text-left p-3 rounded border border-[#33291f]"
               >
-                <p className="text-white font-medium">{p.name}</p>
-                <p className="text-slate-400 text-sm">
+                <p className="text-[#f2ece2] font-medium">{p.name}</p>
+                <p className="text-[#8a8177] text-sm">
                   {p.selling_price.toFixed(2)} · Stock: {p.current_stock}
                 </p>
               </button>
             ))}
             {filtered.length === 0 && (
-              <p className="text-slate-500 col-span-2">No matching products</p>
+              <p className="text-[#8a8177] sm:col-span-2">No matching products</p>
             )}
           </div>
         )}
       </div>
 
-      {/* Right: cart + checkout */}
-      <div className="bg-slate-800 rounded-lg p-4 flex flex-col">
-        <h2 className="text-white font-bold mb-3">Cart</h2>
+      <div className="bg-[#2c2419] rounded-lg p-4 flex flex-col">
+        <h2 className="text-[#f2ece2] font-bold mb-3">Cart</h2>
 
         <div className="flex-1 overflow-y-auto space-y-2 mb-4">
-          {cart.length === 0 && <p className="text-slate-500 text-sm">Cart is empty</p>}
+          {cart.length === 0 && <p className="text-[#8a8177] text-sm">Cart is empty</p>}
           {cart.map((item) => (
-            <div key={item.product.id} className="flex items-center justify-between bg-slate-700/50 p-2 rounded">
+            <div key={item.product.id} className="flex items-center justify-between bg-[#3a2f22]/50 p-2 rounded">
               <div>
-                <p className="text-white text-sm font-medium">{item.product.name}</p>
-                <p className="text-slate-400 text-xs">{item.product.selling_price.toFixed(2)} each</p>
+                <p className="text-[#f2ece2] text-sm font-medium">{item.product.name}</p>
+                <p className="text-[#8a8177] text-xs">{item.product.selling_price.toFixed(2)} each</p>
               </div>
               <div className="flex items-center gap-2">
-                <button onClick={() => updateQuantity(item.product.id, -1)} className="text-white bg-slate-600 w-6 h-6 rounded">-</button>
-                <span className="text-white w-6 text-center">{item.quantity}</span>
-                <button onClick={() => updateQuantity(item.product.id, 1)} className="text-white bg-slate-600 w-6 h-6 rounded">+</button>
+                <button onClick={() => updateQuantity(item.product.id, -1)} className="text-[#f2ece2] bg-[#3a2f22] w-6 h-6 rounded">-</button>
+                <span className="text-[#f2ece2] w-6 text-center">{item.quantity}</span>
+                <button onClick={() => updateQuantity(item.product.id, 1)} className="text-[#f2ece2] bg-[#3a2f22] w-6 h-6 rounded">+</button>
                 <button onClick={() => removeFromCart(item.product.id)} className="text-red-400 text-xs ml-1">✕</button>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="border-t border-slate-700 pt-3 space-y-2">
-          <div className="flex justify-between text-white font-bold text-lg">
+        <div className="border-t border-[#33291f] pt-3 space-y-2">
+          <div className="flex justify-between text-[#f2ece2] font-bold text-lg">
             <span>Total</span>
             <span>{total.toFixed(2)}</span>
           </div>
@@ -242,7 +239,7 @@ export default function POS() {
           <select
             value={selectedPaymentId}
             onChange={(e) => setSelectedPaymentId(e.target.value)}
-            className="w-full px-3 py-2 rounded bg-slate-700 text-white"
+            className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]"
           >
             {paymentMethods.map((pm) => (
               <option key={pm.id} value={pm.id}>{pm.name}</option>
@@ -254,7 +251,7 @@ export default function POS() {
             placeholder="Amount received"
             value={amountPaid}
             onChange={(e) => setAmountPaid(e.target.value)}
-            className="w-full px-3 py-2 rounded bg-slate-700 text-white"
+            className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]"
           />
 
           {paid > 0 && (
@@ -269,7 +266,7 @@ export default function POS() {
           <button
             onClick={handleCheckout}
             disabled={processing || cart.length === 0}
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded disabled:opacity-50"
+            className="w-full bg-[#d4a24e] hover:bg-[#c69144] text-[#1c1815] font-bold py-3 rounded disabled:opacity-50"
           >
             {processing ? 'Processing...' : 'Complete Sale'}
           </button>

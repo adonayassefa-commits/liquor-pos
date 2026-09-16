@@ -35,7 +35,6 @@ export default function Dashboard() {
     const todayStart = new Date()
     todayStart.setHours(0, 0, 0, 0)
 
-    // Today's sales
     const { data: todaySalesData } = await supabase
       .from('sales')
       .select('total, subtotal')
@@ -54,7 +53,6 @@ export default function Dashboard() {
       0
     )
 
-    // Product-level stats
     const { data: products } = await supabase
       .from('products')
       .select('current_stock, cost_price, selling_price, reorder_level')
@@ -80,7 +78,6 @@ export default function Dashboard() {
       outOfStockCount,
     })
 
-    // Best sellers (last 30 days)
     const thirtyDaysAgo = new Date()
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
 
@@ -101,7 +98,6 @@ export default function Dashboard() {
       .map((t) => ({ product_name: t.name, total_sold: t.qty }))
     setBestSellers(sorted)
 
-    // Low stock list
     const { data: lowStock } = await supabase
       .from('products')
       .select('id, name, current_stock, reorder_level')
@@ -115,19 +111,19 @@ export default function Dashboard() {
 
   if (loading || !stats) {
     return (
-      <div className="min-h-screen bg-slate-900 p-6">
-        <p className="text-slate-400">Loading dashboard...</p>
+      <div className="min-h-screen bg-[#1c1815] p-6">
+        <p className="text-[#8a8177]">Loading dashboard...</p>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 p-6 space-y-8">
-      <h1 className="text-2xl font-bold text-white">Dashboard</h1>
+    <div className="min-h-screen bg-[#1c1815] p-6 space-y-8">
+      <h1 className="text-2xl font-bold text-[#f2ece2]">Dashboard</h1>
 
       <section>
-        <h2 className="text-slate-400 text-sm uppercase font-semibold mb-3">Today</h2>
-        <div className="grid grid-cols-4 gap-4">
+        <h2 className="text-[#8a8177] text-sm uppercase font-semibold mb-3">Today</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <StatCard label="Sales" value={stats.todaySales.toFixed(2)} />
           <StatCard label="Transactions" value={stats.todayTransactions.toString()} />
           <StatCard label="Items Sold" value={stats.todayItemsSold.toString()} />
@@ -136,8 +132,8 @@ export default function Dashboard() {
       </section>
 
       <section>
-        <h2 className="text-slate-400 text-sm uppercase font-semibold mb-3">Inventory</h2>
-        <div className="grid grid-cols-4 gap-4">
+        <h2 className="text-[#8a8177] text-sm uppercase font-semibold mb-3">Inventory</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <StatCard label="Total Products" value={stats.totalProducts.toString()} />
           <StatCard label="Total Units" value={stats.totalStockUnits.toString()} />
           <StatCard label="Cost Value" value={stats.inventoryCostValue.toFixed(2)} />
@@ -146,40 +142,40 @@ export default function Dashboard() {
       </section>
 
       <section>
-        <h2 className="text-slate-400 text-sm uppercase font-semibold mb-3">Alerts</h2>
+        <h2 className="text-[#8a8177] text-sm uppercase font-semibold mb-3">Alerts</h2>
         <div className="grid grid-cols-2 gap-4">
           <StatCard label="Low Stock Products" value={stats.lowStockCount.toString()} warn={stats.lowStockCount > 0} />
           <StatCard label="Out of Stock" value={stats.outOfStockCount.toString()} warn={stats.outOfStockCount > 0} />
         </div>
       </section>
 
-      <div className="grid grid-cols-2 gap-6">
-        <section className="bg-slate-800 rounded-lg p-4">
-          <h2 className="text-white font-semibold mb-3">Best Sellers (30 days)</h2>
+      <div className="grid md:grid-cols-2 gap-6">
+        <section className="bg-[#2c2419] rounded-lg p-4">
+          <h2 className="text-[#f2ece2] font-semibold mb-3">Best Sellers (30 days)</h2>
           {bestSellers.length === 0 ? (
-            <p className="text-slate-500 text-sm">No sales yet</p>
+            <p className="text-[#8a8177] text-sm">No sales yet</p>
           ) : (
             <ul className="space-y-2">
               {bestSellers.map((b, i) => (
-                <li key={i} className="flex justify-between text-slate-300 text-sm">
+                <li key={i} className="flex justify-between text-[#a89d8f] text-sm">
                   <span>{b.product_name}</span>
-                  <span className="text-purple-400 font-semibold">{b.total_sold} sold</span>
+                  <span className="text-[#d4a24e] font-semibold">{b.total_sold} sold</span>
                 </li>
               ))}
             </ul>
           )}
         </section>
 
-        <section className="bg-slate-800 rounded-lg p-4">
-          <h2 className="text-white font-semibold mb-3">Needs Attention</h2>
+        <section className="bg-[#2c2419] rounded-lg p-4">
+          <h2 className="text-[#f2ece2] font-semibold mb-3">Needs Attention</h2>
           {lowStockProducts.length === 0 ? (
-            <p className="text-slate-500 text-sm">All stock levels healthy</p>
+            <p className="text-[#8a8177] text-sm">All stock levels healthy</p>
           ) : (
             <ul className="space-y-2">
               {lowStockProducts.map((p) => (
-                <li key={p.id} className="flex justify-between text-slate-300 text-sm">
+                <li key={p.id} className="flex justify-between text-[#a89d8f] text-sm">
                   <span>{p.name}</span>
-                  <span className={p.current_stock === 0 ? 'text-red-400 font-semibold' : 'text-yellow-400 font-semibold'}>
+                  <span className={p.current_stock === 0 ? 'text-red-400 font-semibold' : 'text-[#d4a24e] font-semibold'}>
                     {p.current_stock} left
                   </span>
                 </li>
@@ -196,9 +192,9 @@ function StatCard({
   label, value, accent, warn,
 }: { label: string; value: string; accent?: boolean; warn?: boolean }) {
   return (
-    <div className="bg-slate-800 rounded-lg p-4">
-      <p className="text-slate-400 text-xs uppercase mb-1">{label}</p>
-      <p className={`text-2xl font-bold ${warn ? 'text-red-400' : accent ? 'text-purple-400' : 'text-white'}`}>
+    <div className="bg-[#2c2419] rounded-lg p-4">
+      <p className="text-[#8a8177] text-xs uppercase mb-1">{label}</p>
+      <p className={`text-2xl font-bold ${warn ? 'text-red-400' : accent ? 'text-[#d4a24e]' : 'text-[#f2ece2]'}`}>
         {value}
       </p>
     </div>

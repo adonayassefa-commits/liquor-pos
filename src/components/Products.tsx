@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import Papa from 'papaparse'
 import { supabase } from '../lib/supabaseClient'
 
 type Category = {
@@ -32,7 +31,6 @@ export default function Products({ canEdit }: Props) {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [showForm, setShowForm] = useState(false)
-  const [showImport, setShowImport] = useState(false)
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
 
   useEffect(() => {
@@ -85,27 +83,19 @@ export default function Products({ canEdit }: Props) {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 p-6">
+    <div className="min-h-screen bg-[#1c1815] p-6">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-white">Products</h1>
+        <h1 className="text-2xl font-bold text-[#f2ece2]">Products</h1>
         {canEdit && (
-          <div className="flex gap-2">
-            <button
-              onClick={() => setShowImport(true)}
-              className="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded font-semibold"
-            >
-              Import CSV
-            </button>
-            <button
-              onClick={() => {
-                setEditingProduct(null)
-                setShowForm(true)
-              }}
-              className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded font-semibold"
-            >
-              + Add Product
-            </button>
-          </div>
+          <button
+            onClick={() => {
+              setEditingProduct(null)
+              setShowForm(true)
+            }}
+            className="bg-[#d4a24e] hover:bg-[#c69144] text-[#1c1815] px-4 py-2 rounded font-semibold"
+          >
+            + Add Product
+          </button>
         )}
       </div>
 
@@ -114,17 +104,17 @@ export default function Products({ canEdit }: Props) {
         placeholder="Search by name, SKU, or barcode..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="w-full mb-4 px-3 py-2 rounded bg-slate-800 text-white outline-none focus:ring-2 focus:ring-purple-500"
+        className="w-full mb-4 px-3 py-2 rounded bg-[#2c2419] text-[#f2ece2] outline-none focus:ring-2 focus:ring-[#d4a24e]"
       />
 
       {loading ? (
-        <p className="text-slate-400">Loading products...</p>
+        <p className="text-[#8a8177]">Loading products...</p>
       ) : filtered.length === 0 ? (
-        <p className="text-slate-400">No products found.</p>
+        <p className="text-[#8a8177]">No products found.</p>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-slate-700">
-          <table className="w-full text-left text-white">
-            <thead className="bg-slate-800 text-slate-300 text-sm uppercase">
+        <div className="overflow-x-auto rounded-lg border border-[#33291f]">
+          <table className="w-full text-left text-[#f2ece2]">
+            <thead className="bg-[#2c2419] text-[#a89d8f] text-sm uppercase">
               <tr>
                 <th className="px-4 py-3">Name</th>
                 <th className="px-4 py-3">SKU</th>
@@ -137,10 +127,10 @@ export default function Products({ canEdit }: Props) {
             </thead>
             <tbody>
               {filtered.map((p) => (
-                <tr key={p.id} className="border-t border-slate-700 hover:bg-slate-800/50">
+                <tr key={p.id} className="border-t border-[#33291f] hover:bg-[#2c2419]/50">
                   <td className="px-4 py-3 font-medium">{p.name}</td>
-                  <td className="px-4 py-3 text-slate-400">{p.sku ?? '—'}</td>
-                  <td className="px-4 py-3 text-slate-400">{categoryName(p.category_id)}</td>
+                  <td className="px-4 py-3 text-[#8a8177]">{p.sku ?? '—'}</td>
+                  <td className="px-4 py-3 text-[#8a8177]">{categoryName(p.category_id)}</td>
                   <td className="px-4 py-3">{canEdit ? p.cost_price.toFixed(2) : '—'}</td>
                   <td className="px-4 py-3">{p.selling_price.toFixed(2)}</td>
                   <td className="px-4 py-3">
@@ -155,7 +145,7 @@ export default function Products({ canEdit }: Props) {
                           setEditingProduct(p)
                           setShowForm(true)
                         }}
-                        className="text-purple-400 hover:underline"
+                        className="text-[#d4a24e] hover:underline"
                       >
                         Edit
                       </button>
@@ -181,17 +171,6 @@ export default function Products({ canEdit }: Props) {
           onClose={() => setShowForm(false)}
           onSaved={() => {
             setShowForm(false)
-            loadProducts()
-          }}
-        />
-      )}
-
-      {showImport && (
-        <ImportCSV
-          categories={categories}
-          onClose={() => setShowImport(false)}
-          onImported={() => {
-            setShowImport(false)
             loadProducts()
           }}
         />
@@ -255,47 +234,47 @@ function ProductForm({
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
       <form
         onSubmit={handleSubmit}
-        className="bg-slate-800 p-6 rounded-lg w-full max-w-md space-y-3"
+        className="bg-[#2c2419] p-6 rounded-lg w-full max-w-md space-y-3"
       >
-        <h2 className="text-xl font-bold text-white mb-2">
+        <h2 className="text-xl font-bold text-[#f2ece2] mb-2">
           {product ? 'Edit Product' : 'Add Product'}
         </h2>
 
         <div>
-          <label className="block text-sm text-slate-300 mb-1">Name *</label>
+          <label className="block text-sm text-[#a89d8f] mb-1">Name *</label>
           <input
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full px-3 py-2 rounded bg-slate-700 text-white"
+            className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]"
           />
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm text-slate-300 mb-1">SKU</label>
+            <label className="block text-sm text-[#a89d8f] mb-1">SKU</label>
             <input
               value={sku}
               onChange={(e) => setSku(e.target.value)}
-              className="w-full px-3 py-2 rounded bg-slate-700 text-white"
+              className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]"
             />
           </div>
           <div>
-            <label className="block text-sm text-slate-300 mb-1">Barcode</label>
+            <label className="block text-sm text-[#a89d8f] mb-1">Barcode</label>
             <input
               value={barcode}
               onChange={(e) => setBarcode(e.target.value)}
-              className="w-full px-3 py-2 rounded bg-slate-700 text-white"
+              className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm text-slate-300 mb-1">Category</label>
+          <label className="block text-sm text-[#a89d8f] mb-1">Category</label>
           <select
             value={categoryId}
             onChange={(e) => setCategoryId(e.target.value)}
-            className="w-full px-3 py-2 rounded bg-slate-700 text-white"
+            className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]"
           >
             <option value="">— None —</option>
             {categories.map((c) => (
@@ -306,42 +285,42 @@ function ProductForm({
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm text-slate-300 mb-1">Cost Price</label>
+            <label className="block text-sm text-[#a89d8f] mb-1">Cost Price</label>
             <input
               type="number" step="0.01"
               value={costPrice}
               onChange={(e) => setCostPrice(e.target.value)}
-              className="w-full px-3 py-2 rounded bg-slate-700 text-white"
+              className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]"
             />
           </div>
           <div>
-            <label className="block text-sm text-slate-300 mb-1">Selling Price *</label>
+            <label className="block text-sm text-[#a89d8f] mb-1">Selling Price *</label>
             <input
               required type="number" step="0.01"
               value={sellingPrice}
               onChange={(e) => setSellingPrice(e.target.value)}
-              className="w-full px-3 py-2 rounded bg-slate-700 text-white"
+              className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]"
             />
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm text-slate-300 mb-1">Current Stock</label>
+            <label className="block text-sm text-[#a89d8f] mb-1">Current Stock</label>
             <input
               type="number"
               value={currentStock}
               onChange={(e) => setCurrentStock(e.target.value)}
-              className="w-full px-3 py-2 rounded bg-slate-700 text-white"
+              className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]"
             />
           </div>
           <div>
-            <label className="block text-sm text-slate-300 mb-1">Reorder Level</label>
+            <label className="block text-sm text-[#a89d8f] mb-1">Reorder Level</label>
             <input
               type="number"
               value={reorderLevel}
               onChange={(e) => setReorderLevel(e.target.value)}
-              className="w-full px-3 py-2 rounded bg-slate-700 text-white"
+              className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]"
             />
           </div>
         </div>
@@ -352,164 +331,19 @@ function ProductForm({
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded text-slate-300 hover:bg-slate-700"
+            className="px-4 py-2 rounded text-[#a89d8f] hover:bg-[#3a2f22]"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={saving}
-            className="px-4 py-2 rounded bg-purple-600 hover:bg-purple-700 text-white font-semibold disabled:opacity-50"
+            className="px-4 py-2 rounded bg-[#d4a24e] hover:bg-[#c69144] text-[#1c1815] font-semibold disabled:opacity-50"
           >
             {saving ? 'Saving...' : 'Save'}
           </button>
         </div>
       </form>
-    </div>
-  )
-}
-
-function ImportCSV({
-  categories, onClose, onImported,
-}: { categories: Category[]; onClose: () => void; onImported: () => void }) {
-  const [rows, setRows] = useState<any[]>([])
-  const [errors, setErrors] = useState<string[]>([])
-  const [importing, setImporting] = useState(false)
-  const [fileName, setFileName] = useState('')
-
-  function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    if (!file) return
-    setFileName(file.name)
-
-    Papa.parse(file, {
-      header: true,
-      skipEmptyLines: true,
-      complete: (results) => {
-        const parsedRows = results.data as any[]
-        const validationErrors: string[] = []
-
-        parsedRows.forEach((row, i) => {
-          if (!row['Product Name']?.trim()) {
-            validationErrors.push(`Row ${i + 2}: Missing Product Name`)
-          }
-          if (row['Selling Price'] && isNaN(parseFloat(row['Selling Price']))) {
-            validationErrors.push(`Row ${i + 2}: Invalid Selling Price`)
-          }
-          if (row['Cost Price'] && isNaN(parseFloat(row['Cost Price']))) {
-            validationErrors.push(`Row ${i + 2}: Invalid Cost Price`)
-          }
-        })
-
-        setRows(parsedRows)
-        setErrors(validationErrors)
-      },
-    })
-  }
-
-  function findCategoryId(name: string | undefined) {
-    if (!name) return null
-    const match = categories.find((c) => c.name.toLowerCase() === name.trim().toLowerCase())
-    return match?.id ?? null
-  }
-
-  async function handleImport() {
-    setImporting(true)
-
-    const payload = rows
-      .filter((row) => row['Product Name']?.trim())
-      .map((row) => ({
-        name: row['Product Name'].trim(),
-        sku: row['SKU']?.trim() || null,
-        barcode: row['Barcode']?.trim() || null,
-        brand: row['Brand']?.trim() || null,
-        category_id: findCategoryId(row['Category']),
-        size: row['Size']?.trim() || null,
-        cost_price: parseFloat(row['Cost Price']) || 0,
-        selling_price: parseFloat(row['Selling Price']) || 0,
-        reorder_level: parseInt(row['Reorder Level']) || 5,
-        current_stock: 0,
-      }))
-
-    const { error } = await supabase.from('products').insert(payload)
-
-    if (error) {
-      setErrors([error.message])
-      setImporting(false)
-    } else {
-      onImported()
-    }
-  }
-
-  return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
-      <div className="bg-slate-800 p-6 rounded-lg w-full max-w-2xl max-h-[85vh] overflow-y-auto space-y-4">
-        <h2 className="text-xl font-bold text-white">Import Products from CSV</h2>
-
-        <p className="text-slate-400 text-sm">
-          Expected columns: SKU, Barcode, Product Name, Brand, Category, Size, Cost Price, Selling Price, Reorder Level
-        </p>
-
-        <input
-          type="file"
-          accept=".csv"
-          onChange={handleFile}
-          className="text-white text-sm"
-        />
-
-        {fileName && <p className="text-slate-400 text-sm">Loaded: {fileName} ({rows.length} rows)</p>}
-
-        {errors.length > 0 && (
-          <div className="bg-red-900/30 border border-red-700 rounded p-3 max-h-40 overflow-y-auto">
-            {errors.map((err, i) => (
-              <p key={i} className="text-red-400 text-sm">{err}</p>
-            ))}
-          </div>
-        )}
-
-        {rows.length > 0 && (
-          <div className="overflow-x-auto max-h-64 overflow-y-auto border border-slate-700 rounded">
-            <table className="w-full text-white text-xs">
-              <thead className="bg-slate-700 sticky top-0">
-                <tr>
-                  <th className="px-2 py-1 text-left">Name</th>
-                  <th className="px-2 py-1 text-left">SKU</th>
-                  <th className="px-2 py-1 text-left">Category</th>
-                  <th className="px-2 py-1 text-left">Cost</th>
-                  <th className="px-2 py-1 text-left">Price</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.slice(0, 20).map((row, i) => (
-                  <tr key={i} className="border-t border-slate-700">
-                    <td className="px-2 py-1">{row['Product Name']}</td>
-                    <td className="px-2 py-1">{row['SKU']}</td>
-                    <td className="px-2 py-1">{row['Category']}</td>
-                    <td className="px-2 py-1">{row['Cost Price']}</td>
-                    <td className="px-2 py-1">{row['Selling Price']}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {rows.length > 20 && (
-              <p className="text-slate-500 text-xs p-2">...and {rows.length - 20} more rows</p>
-            )}
-          </div>
-        )}
-
-        <div className="flex justify-end gap-2 pt-2">
-          <button onClick={onClose} className="px-4 py-2 rounded text-slate-300 hover:bg-slate-700">
-            Cancel
-          </button>
-          <button
-            onClick={handleImport}
-            disabled={rows.length === 0 || errors.length > 0 || importing}
-            className="px-4 py-2 rounded bg-purple-600 hover:bg-purple-700 text-white font-semibold disabled:opacity-50"
-          >
-            {importing ? 'Importing...' : `Import ${rows.length} Products`}
-          </button>
-        </div>
-      </div>
     </div>
   )
 }

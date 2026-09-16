@@ -54,25 +54,25 @@ export default function Purchases() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 p-6">
+    <div className="min-h-screen bg-[#1c1815] p-6">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-white">Purchases</h1>
+        <h1 className="text-2xl font-bold text-[#f2ece2]">Purchases</h1>
         <button
           onClick={() => setShowForm(true)}
-          className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded font-semibold"
+          className="bg-[#d4a24e] hover:bg-[#c69144] text-[#1c1815] px-4 py-2 rounded font-semibold"
         >
           + New Purchase
         </button>
       </div>
 
       {loading ? (
-        <p className="text-slate-400">Loading...</p>
+        <p className="text-[#8a8177]">Loading...</p>
       ) : purchases.length === 0 ? (
-        <p className="text-slate-400">No purchases yet.</p>
+        <p className="text-[#8a8177]">No purchases yet.</p>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-slate-700">
-          <table className="w-full text-left text-white">
-            <thead className="bg-slate-800 text-slate-300 text-sm uppercase">
+        <div className="overflow-x-auto rounded-lg border border-[#33291f]">
+          <table className="w-full text-left text-[#f2ece2]">
+            <thead className="bg-[#2c2419] text-[#a89d8f] text-sm uppercase">
               <tr>
                 <th className="px-4 py-3">Date</th>
                 <th className="px-4 py-3">Supplier</th>
@@ -84,10 +84,10 @@ export default function Purchases() {
             </thead>
             <tbody>
               {purchases.map((p) => (
-                <tr key={p.id} className="border-t border-slate-700 hover:bg-slate-800/50">
+                <tr key={p.id} className="border-t border-[#33291f] hover:bg-[#2c2419]/50">
                   <td className="px-4 py-3">{p.purchase_date}</td>
                   <td className="px-4 py-3">{p.suppliers?.name ?? '—'}</td>
-                  <td className="px-4 py-3 text-slate-400">{p.invoice_number ?? '—'}</td>
+                  <td className="px-4 py-3 text-[#8a8177]">{p.invoice_number ?? '—'}</td>
                   <td className="px-4 py-3">{p.grand_total.toFixed(2)}</td>
                   <td className="px-4 py-3">
                     <span className={p.status === 'received' ? 'text-green-400' : 'text-yellow-400'}>
@@ -99,7 +99,7 @@ export default function Purchases() {
                       <button
                         onClick={() => handleReceive(p.id)}
                         disabled={receivingId === p.id}
-                        className="text-purple-400 hover:underline disabled:opacity-50"
+                        className="text-[#d4a24e] hover:underline disabled:opacity-50"
                       >
                         {receivingId === p.id ? 'Receiving...' : 'Mark Received'}
                       </button>
@@ -200,58 +200,58 @@ function NewPurchaseForm({ onClose, onSaved }: { onClose: () => void; onSaved: (
 
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
-      <div className="bg-slate-800 p-6 rounded-lg w-full max-w-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-        <h2 className="text-xl font-bold text-white">New Purchase</h2>
+      <div className="bg-[#2c2419] p-6 rounded-lg w-full max-w-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+        <h2 className="text-xl font-bold text-[#f2ece2]">New Purchase</h2>
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm text-slate-300 mb-1">Supplier *</label>
+            <label className="block text-sm text-[#a89d8f] mb-1">Supplier *</label>
             <select value={supplierId} onChange={(e) => setSupplierId(e.target.value)}
-              className="w-full px-3 py-2 rounded bg-slate-700 text-white">
+              className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]">
               <option value="">— Select —</option>
               {suppliers.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
           </div>
           <div>
-            <label className="block text-sm text-slate-300 mb-1">Invoice Number</label>
+            <label className="block text-sm text-[#a89d8f] mb-1">Invoice Number</label>
             <input value={invoiceNumber} onChange={(e) => setInvoiceNumber(e.target.value)}
-              className="w-full px-3 py-2 rounded bg-slate-700 text-white" />
+              className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]" />
           </div>
         </div>
 
-        <div className="border-t border-slate-700 pt-3">
-          <h3 className="text-white font-semibold mb-2">Add Products</h3>
+        <div className="border-t border-[#33291f] pt-3">
+          <h3 className="text-[#f2ece2] font-semibold mb-2">Add Products</h3>
           <div className="grid grid-cols-4 gap-2">
             <select value={selectedProductId} onChange={(e) => {
               setSelectedProductId(e.target.value)
               const p = products.find((p) => p.id === e.target.value)
               if (p) setUnitCost(p.cost_price.toString())
-            }} className="col-span-2 px-3 py-2 rounded bg-slate-700 text-white">
+            }} className="col-span-2 px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]">
               <option value="">— Select product —</option>
               {products.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
             </select>
             <input type="number" placeholder="Qty" value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
-              className="px-3 py-2 rounded bg-slate-700 text-white" />
+              className="px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]" />
             <input type="number" step="0.01" placeholder="Unit cost" value={unitCost}
               onChange={(e) => setUnitCost(e.target.value)}
-              className="px-3 py-2 rounded bg-slate-700 text-white" />
+              className="px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]" />
           </div>
           <button onClick={addLineItem} type="button"
-            className="mt-2 text-purple-400 text-sm hover:underline">
+            className="mt-2 text-[#d4a24e] text-sm hover:underline">
             + Add to purchase
           </button>
         </div>
 
         {items.length > 0 && (
-          <div className="border-t border-slate-700 pt-3">
-            <table className="w-full text-white text-sm">
-              <thead className="text-slate-400 text-left">
+          <div className="border-t border-[#33291f] pt-3">
+            <table className="w-full text-[#f2ece2] text-sm">
+              <thead className="text-[#8a8177] text-left">
                 <tr><th>Product</th><th>Qty</th><th>Unit Cost</th><th>Total</th><th></th></tr>
               </thead>
               <tbody>
                 {items.map((item, i) => (
-                  <tr key={i} className="border-t border-slate-700">
+                  <tr key={i} className="border-t border-[#33291f]">
                     <td className="py-1">{item.product_name}</td>
                     <td>{item.quantity}</td>
                     <td>{item.unit_cost.toFixed(2)}</td>
@@ -263,18 +263,18 @@ function NewPurchaseForm({ onClose, onSaved }: { onClose: () => void; onSaved: (
                 ))}
               </tbody>
             </table>
-            <p className="text-white font-bold text-right mt-2">Total: {total.toFixed(2)}</p>
+            <p className="text-[#f2ece2] font-bold text-right mt-2">Total: {total.toFixed(2)}</p>
           </div>
         )}
 
         {error && <p className="text-red-400 text-sm">{error}</p>}
 
         <div className="flex justify-end gap-2 pt-2">
-          <button onClick={onClose} type="button" className="px-4 py-2 rounded text-slate-300 hover:bg-slate-700">
+          <button onClick={onClose} type="button" className="px-4 py-2 rounded text-[#a89d8f] hover:bg-[#3a2f22]">
             Cancel
           </button>
           <button onClick={handleSubmit} disabled={saving}
-            className="px-4 py-2 rounded bg-purple-600 hover:bg-purple-700 text-white font-semibold disabled:opacity-50">
+            className="px-4 py-2 rounded bg-[#d4a24e] hover:bg-[#c69144] text-[#1c1815] font-semibold disabled:opacity-50">
             {saving ? 'Saving...' : 'Save as Draft'}
           </button>
         </div>
