@@ -3,7 +3,7 @@ import type { Session } from '@supabase/supabase-js'
 import {
   LayoutGrid, ShoppingCart, Receipt, Package, ClipboardList,
   Truck, Factory, Users, CreditCard, BarChart3, LogOut, MoreHorizontal, Search, X,
-  Settings as SettingsIcon, FileBarChart, Sun, Moon,
+  Settings as SettingsIcon, FileBarChart, Sun, Moon, Bell,
 } from 'lucide-react'
 import { supabase } from './lib/supabaseClient'
 import { getLanguage, setLanguage as saveLanguage, t, type Language } from './i18n'
@@ -142,7 +142,7 @@ function App() {
   function renderPage() {
     switch (page) {
       case 'dashboard':
-      return <Dashboard lang={lang} />
+        return <Dashboard lang={lang} />
       case 'pos':
         return <POS />
       case 'products':
@@ -175,9 +175,13 @@ function App() {
         style={{ background: 'var(--bg-sidebar)', borderRight: '1px solid var(--border)' }}
       >
         <div className="px-2 py-2 mb-2">
-          <span className="font-semibold text-sm" style={{ color: 'var(--text-primary)', fontFamily: 'Georgia, serif' }}>
+          <button
+            onClick={() => setPage('dashboard')}
+            className="font-semibold text-sm text-left"
+            style={{ color: 'var(--text-primary)', fontFamily: 'Georgia, serif' }}
+          >
             Liquor<span className="text-[#a17a1f]">POS</span>
-          </span>
+          </button>
         </div>
         <nav className="flex flex-col gap-1 flex-1 overflow-y-auto">
           {visibleNav.map((item) => {
@@ -212,20 +216,21 @@ function App() {
 
       <div className="flex-1 flex flex-col min-w-0 h-screen">
         <div
-          className="flex flex-nowrap items-center justify-between px-4 md:px-6 py-3 shrink-0 border-b-2 border-[#d4a24e]"
+          className="flex flex-nowrap items-center justify-end px-4 md:px-6 py-3 shrink-0 border-b-2 border-[#d4a24e] gap-3"
           style={{ background: 'var(--header-bg)' }}
         >
+          <div className="md:hidden mr-auto">
+            <button onClick={() => setPage('dashboard')} className="font-semibold text-sm text-white" style={{ fontFamily: 'Georgia, serif' }}>
+              Liquor<span className="text-[#f3dfa8]">POS</span>
+            </button>
+          </div>
+
           <div className="hidden md:block">
             <GlobalSearch onNavigate={setPage} placeholder={t('search', lang)} />
           </div>
 
-          <div className="md:hidden">
-            <span className="font-semibold text-sm text-white" style={{ fontFamily: 'Georgia, serif' }}>
-              Liquor<span className="text-[#f3dfa8]">POS</span>
-            </span>
-          </div>
-
           <div className="flex items-center gap-2 shrink-0">
+            <NotificationBell onNavigate={setPage} />
             <button
               onClick={toggleTheme}
               className="p-1.5 rounded-full bg-white/15 border border-white/25 text-white"
@@ -329,6 +334,86 @@ function App() {
             </button>
           </div>
         </div>
+      )}
+    </div>
+  )
+}
+
+type LowStockAlert = {
+  id: string
+  name: string
+  current_stock: number
+  reorder_level: number
+}
+
+function NotificationBell({ onNavigate }: { onNavigate: (page: Page) => void }) {
+  const [open, setOpen] = useState(false)
+  const [alerts, setAlerts] = useState<LowStockAlert[]>([])
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    loadAlerts()
+    const interval = setInterval(loadAlerts, 60000)
+    return () => clearInterval(interval)
+  }, [])
+
+  async function loadAlerts() {
+    setLoading(true)
+    const { data } = await supabase
+      .from('products')
+      .select('id, name, current_stock, reorder_level')
+      .eq('is_active', true)
+      .order('current_stock')
+
+    const filtered = (data ?? []).filter((p) => p.current_stock <= p.reorder_level)
+    setAlerts(filtered)
+    setLoading(false)
+  }
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className="relative p-1.5 rounded-full bg-white/15 border border-white/25 text-white"
+      >
+        <Bell size={14} />
+        {alerts.length > 0 && (
+          <span className="absolute -top-1 -right-1 bg-[#8a332e] text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+            {alerts.length > 9 ? '9+' : alerts.length}
+          </span>
+        )}
+      </button>
+      {open && (
+        <>
+          <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
+          <div
+            className="absolute right-0 mt-2 w-72 rounded-lg shadow-lg z-50 max-h-80 overflow-y-auto"
+            style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
+          >
+            <div className="px-4 py-2 font-semibold text-sm" style={{ color: 'var(--text-primary)', borderBottom: '1px solid var(--border)' }}>
+              Notifications
+            </div>
+            {loading ? (
+              <p className="px-4 py-3 text-sm" style={{ color: 'var(--text-muted)' }}>Loading...</p>
+            ) : alerts.length === 0 ? (
+              <p className="px-4 py-3 text-sm" style={{ color: 'var(--text-muted)' }}>No alerts — all stock levels healthy</p>
+            ) : (
+              alerts.map((a) => (
+                <button
+                  key={a.id}
+                  onClick={() => { onNavigate('products'); setOpen(false) }}
+                  className="w-full text-left px-4 py-2 hover:opacity-80 flex justify-between items-center"
+                  style={{ borderBottom: '1px solid var(--border)' }}
+                >
+                  <span className="text-sm" style={{ color: 'var(--text-primary)' }}>{a.name}</span>
+                  <span className={`text-xs font-semibold ${a.current_stock === 0 ? 'text-[#8a332e]' : 'text-[#8a611a]'}`}>
+                    {a.current_stock === 0 ? 'Out of stock' : `${a.current_stock} left`}
+                  </span>
+                </button>
+              ))
+            )}
+          </div>
+        </>
       )}
     </div>
   )

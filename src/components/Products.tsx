@@ -20,6 +20,7 @@ type Product = {
   current_stock: number
   reorder_level: number
   is_active: boolean
+  image_url: string | null
 }
 
 type Props = {
@@ -122,6 +123,7 @@ export default function Products({ canEdit }: Props) {
           <table className="w-full text-left text-[var(--text-primary)]">
             <thead className="bg-[var(--bg-sidebar)] text-[var(--text-secondary)] text-sm uppercase">
               <tr>
+                <th className="px-4 py-3"></th>
                 <th className="px-4 py-3">Name</th>
                 <th className="px-4 py-3">SKU</th>
                 <th className="px-4 py-3">Category</th>
@@ -134,6 +136,13 @@ export default function Products({ canEdit }: Props) {
             <tbody>
               {filtered.map((p) => (
                 <tr key={p.id} className="border-t border-[var(--border)] hover:bg-[var(--bg-sidebar)]">
+                  <td className="px-4 py-3">
+                    {p.image_url ? (
+                      <img src={p.image_url} alt={p.name} className="w-10 h-10 rounded-lg object-cover border border-[var(--border)]" />
+                    ) : (
+                      <div className="w-10 h-10 rounded-lg bg-[var(--bg-input)] border border-[var(--border)]" />
+                    )}
+                  </td>
                   <td className="px-4 py-3 font-medium">{p.name}</td>
                   <td className="px-4 py-3 text-[var(--text-muted)]">{p.sku ?? '—'}</td>
                   <td className="px-4 py-3 text-[var(--text-muted)]">{categoryName(p.category_id)}</td>
@@ -263,8 +272,37 @@ function ProductForm({
   const [sellingPrice, setSellingPrice] = useState(product?.selling_price?.toString() ?? '0')
   const [currentStock, setCurrentStock] = useState(product?.current_stock?.toString() ?? '0')
   const [reorderLevel, setReorderLevel] = useState(product?.reorder_level?.toString() ?? '5')
+  const [imageUrl, setImageUrl] = useState(product?.image_url ?? '')
+  const [uploading, setUploading] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const cameraInputRef = useRef<HTMLInputElement>(null)
+
+  async function handleImageSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setUploading(true)
+    setError('')
+
+    const fileExt = file.name.split('.').pop()
+    const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${fileExt}`
+
+    const { error: uploadError } = await supabase.storage
+      .from('product-images')
+      .upload(fileName, file)
+
+    if (uploadError) {
+      setError('Image upload failed: ' + uploadError.message)
+      setUploading(false)
+      return
+    }
+
+    const { data } = supabase.storage.from('product-images').getPublicUrl(fileName)
+    setImageUrl(data.publicUrl)
+    setUploading(false)
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -280,6 +318,7 @@ function ProductForm({
       selling_price: parseFloat(sellingPrice) || 0,
       current_stock: parseInt(currentStock) || 0,
       reorder_level: parseInt(reorderLevel) || 0,
+      image_url: imageUrl || null,
       updated_at: new Date().toISOString(),
     }
 
@@ -299,11 +338,58 @@ function ProductForm({
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
       <form
         onSubmit={handleSubmit}
-        className="bg-[var(--bg-card)] p-6 rounded-xl w-full max-w-md space-y-3 shadow-lg"
+        className="bg-[var(--bg-card)] p-6 rounded-xl w-full max-w-md space-y-3 shadow-lg max-h-[90vh] overflow-y-auto"
       >
         <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-2">
           {product ? 'Edit Product' : 'Add Product'}
         </h2>
+
+        <div>
+          <label className="block text-sm text-[var(--text-secondary)] mb-1">Photo</label>
+          <div className="flex items-center gap-3">
+            {imageUrl ? (
+              <img src={imageUrl} alt="Product" className="w-16 h-16 rounded-lg object-cover border border-[var(--border)]" />
+            ) : (
+              <div className="w-16 h-16 rounded-lg bg-[var(--bg-input)] border border-[var(--border)] flex items-center justify-center text-[var(--text-muted)] text-xs">
+                No photo
+              </div>
+            )}
+            <div className="flex flex-col gap-1">
+              <button
+                type="button"
+                onClick={() => cameraInputRef.current?.click()}
+                disabled={uploading}
+                className="text-xs px-3 py-1.5 rounded-lg bg-[var(--bg-input)] border border-[var(--border)] text-[var(--text-primary)]"
+              >
+                📷 Take Photo
+              </button>
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploading}
+                className="text-xs px-3 py-1.5 rounded-lg bg-[var(--bg-input)] border border-[var(--border)] text-[var(--text-primary)]"
+              >
+                Upload from Gallery
+              </button>
+            </div>
+            <input
+              ref={cameraInputRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              onChange={handleImageSelect}
+              className="hidden"
+            />
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleImageSelect}
+              className="hidden"
+            />
+          </div>
+          {uploading && <p className="text-[var(--text-muted)] text-xs mt-1">Uploading...</p>}
+        </div>
 
         <div>
           <label className="block text-sm text-[var(--text-secondary)] mb-1">Name *</label>
@@ -403,7 +489,7 @@ function ProductForm({
           </button>
           <button
             type="submit"
-            disabled={saving}
+            disabled={saving || uploading}
             className="px-4 py-2 rounded-lg bg-gradient-to-br from-[#e8c568] to-[#d4a24e] text-[#5a4a1f] font-semibold disabled:opacity-50"
           >
             {saving ? 'Saving...' : 'Save'}
