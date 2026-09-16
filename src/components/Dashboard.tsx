@@ -119,7 +119,12 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-[#1c1815] p-6 space-y-8">
-      <h1 className="text-2xl font-bold text-[#f2ece2]">Dashboard</h1>
+      <div>
+        <h1 className="text-2xl font-bold text-[#f2ece2]">Welcome back 👋</h1>
+        <p className="text-[#8a8177] text-sm">
+          {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+        </p>
+      </div>
 
       <section>
         <h2 className="text-[#8a8177] text-sm uppercase font-semibold mb-3">Today</h2>

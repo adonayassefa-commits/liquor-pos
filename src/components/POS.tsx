@@ -22,6 +22,7 @@ type CartItem = {
 
 export default function POS() {
   const [products, setProducts] = useState<Product[]>([])
+  const [favorites, setFavorites] = useState<Product[]>([])
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([])
   const [search, setSearch] = useState('')
   const [cart, setCart] = useState<CartItem[]>([])
@@ -34,6 +35,7 @@ export default function POS() {
 
   useEffect(() => {
     loadProducts()
+    loadFavorites()
     loadPaymentMethods()
     searchInputRef.current?.focus()
   }, [])
@@ -45,6 +47,41 @@ export default function POS() {
       .eq('is_active', true)
       .order('name')
     setProducts(data ?? [])
+  }
+
+  async function loadFavorites() {
+    const thirtyDaysAgo = new Date()
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+
+    const { data: items } = await supabase
+      .from('sale_items')
+      .select('quantity, product_id, products(id, name, sku, barcode, selling_price, current_stock), sales!inner(created_at)')
+      .gte('sales.created_at', thirtyDaysAgo.toISOString())
+
+    const totals: Record<string, { product: Product; qty: number }> = {}
+    for (const item of (items as any) ?? []) {
+      if (!item.products) continue
+      if (!totals[item.product_id]) totals[item.product_id] = { product: item.products, qty: 0 }
+      totals[item.product_id].qty += item.quantity
+    }
+
+    const top = Object.values(totals)
+      .sort((a, b) => b.qty - a.qty)
+      .slice(0, 8)
+      .map((t) => t.product)
+
+    if (top.length > 0) {
+      setFavorites(top)
+    } else {
+      // No sales yet — fall back to showing the first few products
+      const { data: fallback } = await supabase
+        .from('products')
+        .select('id, name, sku, barcode, selling_price, current_stock')
+        .eq('is_active', true)
+        .order('name')
+        .limit(8)
+      setFavorites(fallback ?? [])
+    }
   }
 
   async function loadPaymentMethods() {
@@ -157,6 +194,7 @@ export default function POS() {
     setCart([])
     setAmountPaid('')
     loadProducts()
+    loadFavorites()
     setProcessing(false)
     searchInputRef.current?.focus()
   }
@@ -184,7 +222,7 @@ export default function POS() {
           className="w-full mb-4 px-3 py-3 rounded bg-[#2c2419] text-[#f2ece2] text-lg outline-none focus:ring-2 focus:ring-[#d4a24e]"
         />
 
-        {search && (
+        {search ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {filtered.map((p) => (
               <button
@@ -206,6 +244,28 @@ export default function POS() {
               <p className="text-[#8a8177] sm:col-span-2">No matching products</p>
             )}
           </div>
+        ) : (
+          <>
+            <p className="text-[#8a8177] text-xs uppercase mb-2">Quick add</p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+              {favorites.map((p) => (
+                <button
+                  key={p.id}
+                  onClick={() => addToCart(p)}
+                  disabled={p.current_stock < 1}
+                  className="bg-[#2c2419] hover:bg-[#3a2f22] text-left p-3 rounded border border-[#33291f] disabled:opacity-40"
+                >
+                  <p className="text-[#f2ece2] font-medium text-sm truncate">{p.name}</p>
+                  <p className="text-[#8a8177] text-xs">
+                    {p.selling_price.toFixed(2)} · {p.current_stock} left
+                  </p>
+                </button>
+              ))}
+              {favorites.length === 0 && (
+                <p className="text-[#8a8177] col-span-full">No products yet</p>
+              )}
+            </div>
+          </>
         )}
       </div>
 
