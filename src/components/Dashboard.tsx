@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
-import { Skeleton, StatCardSkeleton } from './Skeleton'
+import { formatEthiopianDate } from '../ethiopianDate'
+import { getLanguage } from '../i18n'
 
 type Stats = {
   todaySales: number
@@ -110,90 +111,80 @@ export default function Dashboard() {
     setLoading(false)
   }
 
-   if (loading || !stats) {
+  if (loading || !stats) {
     return (
-      <div className="min-h-screen bg-[#1c1815] p-6 space-y-8">
-        <Skeleton className="h-8 w-48" />
-        <div>
-          <Skeleton className="h-4 w-20 mb-3" />
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <StatCardSkeleton /><StatCardSkeleton /><StatCardSkeleton /><StatCardSkeleton />
-          </div>
-        </div>
-        <div>
-          <Skeleton className="h-4 w-24 mb-3" />
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <StatCardSkeleton /><StatCardSkeleton /><StatCardSkeleton /><StatCardSkeleton />
-          </div>
-        </div>
+      <div className="min-h-screen bg-[var(--bg-page)] p-6">
+        <p className="text-[var(--text-muted)]">Loading dashboard...</p>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-[#1c1815] p-6 space-y-8">
+    <div className="min-h-screen bg-[var(--bg-page)] p-6 space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-[#f2ece2]">Welcome back 👋</h1>
-        <p className="text-[#8a8177] text-sm">
-          {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+        <h1 className="text-xl font-semibold text-[var(--text-primary)]" style={{ fontFamily: 'Georgia, serif' }}>
+          Welcome back
+        </h1>
+        <p className="text-[var(--text-muted)] text-xs uppercase tracking-wide font-medium">
+          {formatEthiopianDate(new Date(), getLanguage())}
         </p>
       </div>
 
       <section>
-        <h2 className="text-[#8a8177] text-sm uppercase font-semibold mb-3">Today</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <StatCard label="Sales" value={stats.todaySales.toFixed(2)} />
-          <StatCard label="Transactions" value={stats.todayTransactions.toString()} />
-          <StatCard label="Items Sold" value={stats.todayItemsSold.toString()} />
-          <StatCard label="Gross Profit" value={stats.todayProfit.toFixed(2)} accent />
+        <h2 className="text-[var(--text-secondary)] text-xs uppercase tracking-wide font-bold mb-3">Today</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <StatCard label="Sales" value={stats.todaySales.toFixed(2)} color="#215c37" />
+          <StatCard label="Transactions" value={stats.todayTransactions.toString()} color="#1f3a68" />
+          <StatCard label="Items Sold" value={stats.todayItemsSold.toString()} color="var(--text-primary)" />
+          <StatCard label="Gross Profit" value={stats.todayProfit.toFixed(2)} color="#8a332e" />
         </div>
       </section>
 
       <section>
-        <h2 className="text-[#8a8177] text-sm uppercase font-semibold mb-3">Inventory</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <StatCard label="Total Products" value={stats.totalProducts.toString()} />
-          <StatCard label="Total Units" value={stats.totalStockUnits.toString()} />
-          <StatCard label="Cost Value" value={stats.inventoryCostValue.toFixed(2)} />
-          <StatCard label="Retail Value" value={stats.inventoryRetailValue.toFixed(2)} />
+        <h2 className="text-[var(--text-secondary)] text-xs uppercase tracking-wide font-bold mb-3">Inventory</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <StatCard label="Total Products" value={stats.totalProducts.toString()} color="var(--text-primary)" />
+          <StatCard label="Total Units" value={stats.totalStockUnits.toString()} color="var(--text-primary)" />
+          <StatCard label="Cost Value" value={stats.inventoryCostValue.toFixed(2)} color="var(--text-primary)" />
+          <StatCard label="Retail Value" value={stats.inventoryRetailValue.toFixed(2)} color="var(--text-primary)" />
         </div>
       </section>
 
       <section>
-        <h2 className="text-[#8a8177] text-sm uppercase font-semibold mb-3">Alerts</h2>
-        <div className="grid grid-cols-2 gap-4">
-          <StatCard label="Low Stock Products" value={stats.lowStockCount.toString()} warn={stats.lowStockCount > 0} />
-          <StatCard label="Out of Stock" value={stats.outOfStockCount.toString()} warn={stats.outOfStockCount > 0} />
+        <h2 className="text-[var(--text-secondary)] text-xs uppercase tracking-wide font-bold mb-3">Alerts</h2>
+        <div className="grid grid-cols-2 gap-3">
+          <StatCard label="Low Stock Products" value={stats.lowStockCount.toString()} color={stats.lowStockCount > 0 ? '#8a611a' : 'var(--text-primary)'} />
+          <StatCard label="Out of Stock" value={stats.outOfStockCount.toString()} color={stats.outOfStockCount > 0 ? '#8a332e' : 'var(--text-primary)'} />
         </div>
       </section>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        <section className="bg-[#2c2419] rounded-lg p-4">
-          <h2 className="text-[#f2ece2] font-semibold mb-3">Best Sellers (30 days)</h2>
+      <div className="grid md:grid-cols-2 gap-4">
+        <section className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
+          <h2 className="text-[var(--text-primary)] font-semibold mb-3">Best Sellers (30 days)</h2>
           {bestSellers.length === 0 ? (
-            <p className="text-[#8a8177] text-sm">No sales yet</p>
+            <p className="text-[var(--text-muted)] text-sm">No sales yet</p>
           ) : (
             <ul className="space-y-2">
               {bestSellers.map((b, i) => (
-                <li key={i} className="flex justify-between text-[#a89d8f] text-sm">
+                <li key={i} className="flex justify-between text-[var(--text-secondary)] text-sm">
                   <span>{b.product_name}</span>
-                  <span className="text-[#d4a24e] font-semibold">{b.total_sold} sold</span>
+                  <span className="text-[#a17a1f] font-semibold">{b.total_sold} sold</span>
                 </li>
               ))}
             </ul>
           )}
         </section>
 
-        <section className="bg-[#2c2419] rounded-lg p-4">
-          <h2 className="text-[#f2ece2] font-semibold mb-3">Needs Attention</h2>
+        <section className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
+          <h2 className="text-[var(--text-primary)] font-semibold mb-3">Needs Attention</h2>
           {lowStockProducts.length === 0 ? (
-            <p className="text-[#8a8177] text-sm">All stock levels healthy</p>
+            <p className="text-[#a17a1f] text-sm">All stock levels healthy</p>
           ) : (
             <ul className="space-y-2">
               {lowStockProducts.map((p) => (
-                <li key={p.id} className="flex justify-between text-[#a89d8f] text-sm">
+                <li key={p.id} className="flex justify-between text-[var(--text-secondary)] text-sm">
                   <span>{p.name}</span>
-                  <span className={p.current_stock === 0 ? 'text-red-400 font-semibold' : 'text-[#d4a24e] font-semibold'}>
+                  <span className={p.current_stock === 0 ? 'text-[#8a332e] font-semibold' : 'text-[#a17a1f] font-semibold'}>
                     {p.current_stock} left
                   </span>
                 </li>
@@ -206,13 +197,11 @@ export default function Dashboard() {
   )
 }
 
-function StatCard({
-  label, value, accent, warn,
-}: { label: string; value: string; accent?: boolean; warn?: boolean }) {
+function StatCard({ label, value, color }: { label: string; value: string; color: string }) {
   return (
-    <div className="bg-[#2c2419] rounded-lg p-4">
-      <p className="text-[#8a8177] text-xs uppercase mb-1">{label}</p>
-      <p className={`text-2xl font-bold ${warn ? 'text-red-400' : accent ? 'text-[#d4a24e]' : 'text-[#f2ece2]'}`}>
+    <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
+      <p className="text-[var(--text-secondary)] text-xs uppercase tracking-wide font-semibold mb-1">{label}</p>
+      <p className="text-xl font-semibold" style={{ color }}>
         {value}
       </p>
     </div>

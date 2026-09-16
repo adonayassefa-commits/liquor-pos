@@ -134,24 +134,24 @@ export default function Reports() {
   }
 
   return (
-    <div className="min-h-screen bg-[#1c1815] p-6 space-y-8">
-      <h1 className="text-2xl font-bold text-[#f2ece2]">Reports</h1>
+    <div className="min-h-screen bg-[#fdfcfa] p-6 space-y-8">
+      <h1 className="text-xl font-semibold text-[#1a1611]" style={{ fontFamily: 'Georgia, serif' }}>Reports</h1>
 
-      <div className="flex flex-wrap items-end gap-3 bg-[#2c2419] p-4 rounded-lg">
+      <div className="flex flex-wrap items-end gap-3 bg-white border border-[#ece6da] p-4 rounded-xl shadow-sm">
         <div>
-          <label className="block text-sm text-[#a89d8f] mb-1">From</label>
+          <label className="block text-sm text-[#5c5448] mb-1">From</label>
           <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)}
-            className="px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]" />
+            className="px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]" />
         </div>
         <div>
-          <label className="block text-sm text-[#a89d8f] mb-1">To</label>
+          <label className="block text-sm text-[#5c5448] mb-1">To</label>
           <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)}
-            className="px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]" />
+            className="px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]" />
         </div>
         <button
           onClick={runReport}
           disabled={loading}
-          className="bg-[#d4a24e] hover:bg-[#c69144] text-[#1c1815] px-4 py-2 rounded font-semibold disabled:opacity-50"
+          className="bg-gradient-to-br from-[#e8c568] to-[#d4a24e] hover:from-[#dcb95c] hover:to-[#c69144] text-[#5a4a1f] px-4 py-2 rounded-lg font-semibold disabled:opacity-50"
         >
           {loading ? 'Running...' : 'Run Report'}
         </button>
@@ -160,32 +160,32 @@ export default function Reports() {
       {summary && (
         <>
           <section>
-            <h2 className="text-[#8a8177] text-sm uppercase font-semibold mb-3">Profit Summary</h2>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-              <Stat label="Revenue" value={summary.revenue.toFixed(2)} />
-              <Stat label="COGS" value={summary.cogs.toFixed(2)} />
-              <Stat label="Gross Profit" value={summary.grossProfit.toFixed(2)} accent />
-              <Stat label="Margin" value={summary.margin.toFixed(1) + '%'} />
-              <Stat label="Transactions" value={summary.transactions.toString()} />
+            <h2 className="text-[#4a453d] text-xs uppercase tracking-wide font-bold mb-3">Profit Summary</h2>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+              <Stat label="Revenue" value={summary.revenue.toFixed(2)} color="#1a1611" />
+              <Stat label="COGS" value={summary.cogs.toFixed(2)} color="#1a1611" />
+              <Stat label="Gross Profit" value={summary.grossProfit.toFixed(2)} color="#215c37" />
+              <Stat label="Margin" value={summary.margin.toFixed(1) + '%'} color="#1a1611" />
+              <Stat label="Transactions" value={summary.transactions.toString()} color="#1a1611" />
             </div>
           </section>
 
           {inventoryValuation && (
             <section>
-              <h2 className="text-[#8a8177] text-sm uppercase font-semibold mb-3">
+              <h2 className="text-[#4a453d] text-xs uppercase tracking-wide font-bold mb-3">
                 Current Inventory Valuation
               </h2>
-              <div className="grid grid-cols-3 gap-4">
-                <Stat label="Products" value={inventoryValuation.productCount.toString()} />
-                <Stat label="Cost Value" value={inventoryValuation.totalCost.toFixed(2)} />
-                <Stat label="Retail Value" value={inventoryValuation.totalRetail.toFixed(2)} />
+              <div className="grid grid-cols-3 gap-3">
+                <Stat label="Products" value={inventoryValuation.productCount.toString()} color="#1a1611" />
+                <Stat label="Cost Value" value={inventoryValuation.totalCost.toFixed(2)} color="#1a1611" />
+                <Stat label="Retail Value" value={inventoryValuation.totalRetail.toFixed(2)} color="#1a1611" />
               </div>
             </section>
           )}
 
           <section>
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-[#f2ece2] font-semibold">Sales by Product</h2>
+              <h2 className="text-[#1a1611] font-semibold">Sales by Product</h2>
               <button
                 onClick={() =>
                   exportCSV(
@@ -194,14 +194,14 @@ export default function Reports() {
                     byProduct.map((r) => [r.product_name, r.quantity_sold, r.revenue.toFixed(2), r.cost.toFixed(2), r.profit.toFixed(2)])
                   )
                 }
-                className="text-[#d4a24e] text-sm hover:underline"
+                className="text-[#a17a1f] text-sm hover:underline"
               >
                 Export CSV
               </button>
             </div>
-            <div className="overflow-x-auto rounded-lg border border-[#33291f]">
-              <table className="w-full text-left text-[#f2ece2] text-sm">
-                <thead className="bg-[#2c2419] text-[#a89d8f] uppercase">
+            <div className="overflow-x-auto rounded-xl border border-[#ece6da] bg-white shadow-sm">
+              <table className="w-full text-left text-[#1a1611] text-sm">
+                <thead className="bg-[#faf8f4] text-[#5c5448] uppercase">
                   <tr>
                     <th className="px-4 py-2">Product</th>
                     <th className="px-4 py-2">Qty Sold</th>
@@ -212,16 +212,16 @@ export default function Reports() {
                 </thead>
                 <tbody>
                   {byProduct.map((r, i) => (
-                    <tr key={i} className="border-t border-[#33291f]">
+                    <tr key={i} className="border-t border-[#ece6da]">
                       <td className="px-4 py-2">{r.product_name}</td>
                       <td className="px-4 py-2">{r.quantity_sold}</td>
                       <td className="px-4 py-2">{r.revenue.toFixed(2)}</td>
                       <td className="px-4 py-2">{r.cost.toFixed(2)}</td>
-                      <td className="px-4 py-2 text-green-400">{r.profit.toFixed(2)}</td>
+                      <td className="px-4 py-2 text-[#1f7a3d]">{r.profit.toFixed(2)}</td>
                     </tr>
                   ))}
                   {byProduct.length === 0 && (
-                    <tr><td colSpan={5} className="px-4 py-4 text-[#8a8177]">No sales in this period</td></tr>
+                    <tr><td colSpan={5} className="px-4 py-4 text-[#6b6156]">No sales in this period</td></tr>
                   )}
                 </tbody>
               </table>
@@ -230,7 +230,7 @@ export default function Reports() {
 
           <section>
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-[#f2ece2] font-semibold">Sales by Cashier</h2>
+              <h2 className="text-[#1a1611] font-semibold">Sales by Cashier</h2>
               <button
                 onClick={() =>
                   exportCSV(
@@ -239,14 +239,14 @@ export default function Reports() {
                     byCashier.map((r) => [r.cashier_name, r.transactions, r.revenue.toFixed(2)])
                   )
                 }
-                className="text-[#d4a24e] text-sm hover:underline"
+                className="text-[#a17a1f] text-sm hover:underline"
               >
                 Export CSV
               </button>
             </div>
-            <div className="overflow-x-auto rounded-lg border border-[#33291f]">
-              <table className="w-full text-left text-[#f2ece2] text-sm">
-                <thead className="bg-[#2c2419] text-[#a89d8f] uppercase">
+            <div className="overflow-x-auto rounded-xl border border-[#ece6da] bg-white shadow-sm">
+              <table className="w-full text-left text-[#1a1611] text-sm">
+                <thead className="bg-[#faf8f4] text-[#5c5448] uppercase">
                   <tr>
                     <th className="px-4 py-2">Cashier</th>
                     <th className="px-4 py-2">Transactions</th>
@@ -255,14 +255,14 @@ export default function Reports() {
                 </thead>
                 <tbody>
                   {byCashier.map((r, i) => (
-                    <tr key={i} className="border-t border-[#33291f]">
+                    <tr key={i} className="border-t border-[#ece6da]">
                       <td className="px-4 py-2">{r.cashier_name}</td>
                       <td className="px-4 py-2">{r.transactions}</td>
                       <td className="px-4 py-2">{r.revenue.toFixed(2)}</td>
                     </tr>
                   ))}
                   {byCashier.length === 0 && (
-                    <tr><td colSpan={3} className="px-4 py-4 text-[#8a8177]">No sales in this period</td></tr>
+                    <tr><td colSpan={3} className="px-4 py-4 text-[#6b6156]">No sales in this period</td></tr>
                   )}
                 </tbody>
               </table>
@@ -272,17 +272,17 @@ export default function Reports() {
       )}
 
       {!summary && !loading && (
-        <p className="text-[#8a8177]">Select a date range and click "Run Report" to see results.</p>
+        <p className="text-[#6b6156]">Select a date range and click "Run Report" to see results.</p>
       )}
     </div>
   )
 }
 
-function Stat({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
+function Stat({ label, value, color }: { label: string; value: string; color: string }) {
   return (
-    <div className="bg-[#2c2419] rounded-lg p-4">
-      <p className="text-[#8a8177] text-xs uppercase mb-1">{label}</p>
-      <p className={`text-2xl font-bold ${accent ? 'text-[#d4a24e]' : 'text-[#f2ece2]'}`}>{value}</p>
+    <div className="bg-white border border-[#ece6da] rounded-xl p-4 shadow-sm">
+      <p className="text-[#5c5448] text-xs uppercase tracking-wide font-semibold mb-1">{label}</p>
+      <p className="text-xl font-semibold" style={{ color }}>{value}</p>
     </div>
   )
 }

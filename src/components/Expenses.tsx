@@ -52,30 +52,30 @@ export default function Expenses() {
     .reduce((sum, e) => sum + Number(e.amount), 0)
 
   return (
-    <div className="min-h-screen bg-[#1c1815] p-6">
+    <div className="min-h-screen bg-[#fdfcfa] p-6">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-[#f2ece2]">Expenses</h1>
+        <h1 className="text-xl font-semibold text-[#1a1611]" style={{ fontFamily: 'Georgia, serif' }}>Expenses</h1>
         <button
           onClick={() => setShowForm(true)}
-          className="bg-[#d4a24e] hover:bg-[#c69144] text-[#1c1815] px-4 py-2 rounded font-semibold"
+          className="bg-gradient-to-br from-[#e8c568] to-[#d4a24e] hover:from-[#dcb95c] hover:to-[#c69144] text-[#5a4a1f] px-4 py-2 rounded-lg font-semibold shadow-sm"
         >
           + Add Expense
         </button>
       </div>
 
-      <div className="bg-[#2c2419] rounded-lg p-4 mb-6 inline-block">
-        <p className="text-[#8a8177] text-xs uppercase">This Month</p>
-        <p className="text-2xl font-bold text-[#f2ece2]">{totalThisMonth.toFixed(2)}</p>
+      <div className="bg-white border border-[#ece6da] rounded-xl p-4 mb-6 inline-block shadow-sm">
+        <p className="text-[#5c5448] text-xs uppercase font-semibold">This Month</p>
+        <p className="text-xl font-semibold text-[#1a1611]">{totalThisMonth.toFixed(2)}</p>
       </div>
 
       {loading ? (
-        <p className="text-[#8a8177]">Loading...</p>
+        <p className="text-[#6b6156]">Loading...</p>
       ) : expenses.length === 0 ? (
-        <p className="text-[#8a8177]">No expenses recorded yet.</p>
+        <p className="text-[#6b6156]">No expenses recorded yet.</p>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-[#33291f]">
-          <table className="w-full text-left text-[#f2ece2] text-sm">
-            <thead className="bg-[#2c2419] text-[#a89d8f] uppercase">
+        <div className="overflow-x-auto rounded-xl border border-[#ece6da] bg-white shadow-sm">
+          <table className="w-full text-left text-[#1a1611] text-sm">
+            <thead className="bg-[#faf8f4] text-[#5c5448] uppercase">
               <tr>
                 <th className="px-4 py-3">Date</th>
                 <th className="px-4 py-3">Category</th>
@@ -87,13 +87,13 @@ export default function Expenses() {
             </thead>
             <tbody>
               {expenses.map((e) => (
-                <tr key={e.id} className="border-t border-[#33291f] hover:bg-[#2c2419]/50">
-                  <td className="px-4 py-3 text-[#8a8177]">{e.expense_date}</td>
+                <tr key={e.id} className="border-t border-[#ece6da] hover:bg-[#faf8f4]">
+                  <td className="px-4 py-3 text-[#6b6156]">{e.expense_date}</td>
                   <td className="px-4 py-3">{e.expense_categories?.name ?? '—'}</td>
                   <td className="px-4 py-3">{e.description ?? '—'}</td>
                   <td className="px-4 py-3 font-semibold">{Number(e.amount).toFixed(2)}</td>
-                  <td className="px-4 py-3 text-[#8a8177]">{e.payment_methods?.name ?? '—'}</td>
-                  <td className="px-4 py-3 text-[#8a8177]">{e.profiles?.full_name ?? e.profiles?.email ?? '—'}</td>
+                  <td className="px-4 py-3 text-[#6b6156]">{e.payment_methods?.name ?? '—'}</td>
+                  <td className="px-4 py-3 text-[#6b6156]">{e.profiles?.full_name ?? e.profiles?.email ?? '—'}</td>
                 </tr>
               ))}
             </tbody>
@@ -151,63 +151,63 @@ function ExpenseForm({
   }
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
-      <form onSubmit={handleSubmit} className="bg-[#2c2419] p-6 rounded-lg w-full max-w-md space-y-3">
-        <h2 className="text-xl font-bold text-[#f2ece2] mb-2">Add Expense</h2>
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
+      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-xl w-full max-w-md space-y-3 shadow-lg">
+        <h2 className="text-lg font-semibold text-[#1a1611] mb-2">Add Expense</h2>
 
         <div>
-          <label className="block text-sm text-[#a89d8f] mb-1">Category</label>
+          <label className="block text-sm text-[#5c5448] mb-1">Category</label>
           <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)}
-            className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]">
+            className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]">
             <option value="">— Select —</option>
             {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
         </div>
 
         <div>
-          <label className="block text-sm text-[#a89d8f] mb-1">Description</label>
+          <label className="block text-sm text-[#5c5448] mb-1">Description</label>
           <input value={description} onChange={(e) => setDescription(e.target.value)}
-            className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]" />
+            className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]" />
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm text-[#a89d8f] mb-1">Amount *</label>
+            <label className="block text-sm text-[#5c5448] mb-1">Amount *</label>
             <input required type="number" step="0.01" value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]" />
+              className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]" />
           </div>
           <div>
-            <label className="block text-sm text-[#a89d8f] mb-1">Date *</label>
+            <label className="block text-sm text-[#5c5448] mb-1">Date *</label>
             <input required type="date" value={expenseDate}
               onChange={(e) => setExpenseDate(e.target.value)}
-              className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]" />
+              className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]" />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm text-[#a89d8f] mb-1">Payment Method</label>
+          <label className="block text-sm text-[#5c5448] mb-1">Payment Method</label>
           <select value={paymentMethodId} onChange={(e) => setPaymentMethodId(e.target.value)}
-            className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]">
+            className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]">
             <option value="">— Select —</option>
             {paymentMethods.map((pm) => <option key={pm.id} value={pm.id}>{pm.name}</option>)}
           </select>
         </div>
 
         <div>
-          <label className="block text-sm text-[#a89d8f] mb-1">Notes</label>
+          <label className="block text-sm text-[#5c5448] mb-1">Notes</label>
           <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2}
-            className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]" />
+            className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]" />
         </div>
 
-        {error && <p className="text-red-400 text-sm">{error}</p>}
+        {error && <p className="text-[#8a332e] text-sm">{error}</p>}
 
         <div className="flex justify-end gap-2 pt-2">
-          <button type="button" onClick={onClose} className="px-4 py-2 rounded text-[#a89d8f] hover:bg-[#3a2f22]">
+          <button type="button" onClick={onClose} className="px-4 py-2 rounded-lg text-[#6b6156] hover:bg-[#faf8f4]">
             Cancel
           </button>
           <button type="submit" disabled={saving}
-            className="px-4 py-2 rounded bg-[#d4a24e] hover:bg-[#c69144] text-[#1c1815] font-semibold disabled:opacity-50">
+            className="px-4 py-2 rounded-lg bg-gradient-to-br from-[#e8c568] to-[#d4a24e] text-[#5a4a1f] font-semibold disabled:opacity-50">
             {saving ? 'Saving...' : 'Save'}
           </button>
         </div>

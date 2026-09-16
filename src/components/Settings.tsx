@@ -55,29 +55,29 @@ export default function Settings() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#1c1815] p-6">
-        <p className="text-[#8a8177]">Loading settings...</p>
+      <div className="min-h-screen bg-[#fdfcfa] p-6">
+        <p className="text-[#6b6156]">Loading settings...</p>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-[#1c1815] p-6 max-w-3xl">
+    <div className="min-h-screen bg-[#fdfcfa] p-6 max-w-3xl">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-[#f2ece2]">Settings</h1>
+        <h1 className="text-xl font-semibold text-[#1a1611]" style={{ fontFamily: 'Georgia, serif' }}>Settings</h1>
         <div className="flex items-center gap-3">
-          {saved && <span className="text-green-400 text-sm">Saved ✓</span>}
+          {saved && <span className="text-[#1f7a3d] text-sm">Saved ✓</span>}
           <button
             onClick={handleSave}
             disabled={saving}
-            className="bg-[#d4a24e] hover:bg-[#c69144] text-[#1c1815] px-4 py-2 rounded font-semibold disabled:opacity-50"
+            className="bg-gradient-to-br from-[#e8c568] to-[#d4a24e] hover:from-[#dcb95c] hover:to-[#c69144] text-[#5a4a1f] px-4 py-2 rounded-lg font-semibold disabled:opacity-50"
           >
             {saving ? 'Saving...' : 'Save Changes'}
           </button>
         </div>
       </div>
 
-      {error && <p className="text-red-400 text-sm mb-4">{error}</p>}
+      {error && <p className="text-[#8a332e] text-sm mb-4">{error}</p>}
 
       <div className="space-y-6">
         <Section title="Store Information">
@@ -85,14 +85,14 @@ export default function Settings() {
             <input
               value={settings.store_name ?? ''}
               onChange={(e) => update('store_name', e.target.value)}
-              className="w-full px-3 py-2 rounded bg-[#2c2419] text-[#f2ece2]"
+              className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
             />
           </Field>
           <Field label="Address">
             <input
               value={settings.store_address ?? ''}
               onChange={(e) => update('store_address', e.target.value)}
-              className="w-full px-3 py-2 rounded bg-[#2c2419] text-[#f2ece2]"
+              className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
             />
           </Field>
           <div className="grid grid-cols-2 gap-3">
@@ -100,14 +100,14 @@ export default function Settings() {
               <input
                 value={settings.store_phone ?? ''}
                 onChange={(e) => update('store_phone', e.target.value)}
-                className="w-full px-3 py-2 rounded bg-[#2c2419] text-[#f2ece2]"
+                className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
               />
             </Field>
             <Field label="Email">
               <input
                 value={settings.store_email ?? ''}
                 onChange={(e) => update('store_email', e.target.value)}
-                className="w-full px-3 py-2 rounded bg-[#2c2419] text-[#f2ece2]"
+                className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
               />
             </Field>
           </div>
@@ -121,7 +121,7 @@ export default function Settings() {
               onChange={(e) => update('tax_enabled', e.target.checked)}
               className="w-4 h-4"
             />
-            <label className="text-[#f2ece2] text-sm">Enable tax on sales</label>
+            <label className="text-[#1a1611] text-sm">Enable tax on sales</label>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <Field label="Tax Name">
@@ -129,7 +129,7 @@ export default function Settings() {
                 value={settings.tax_name ?? ''}
                 onChange={(e) => update('tax_name', e.target.value)}
                 disabled={!settings.tax_enabled}
-                className="w-full px-3 py-2 rounded bg-[#2c2419] text-[#f2ece2] disabled:opacity-50"
+                className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611] disabled:opacity-50"
               />
             </Field>
             <Field label="Tax Percentage">
@@ -139,7 +139,7 @@ export default function Settings() {
                 value={settings.tax_percentage ?? 0}
                 onChange={(e) => update('tax_percentage', parseFloat(e.target.value) || 0)}
                 disabled={!settings.tax_enabled}
-                className="w-full px-3 py-2 rounded bg-[#2c2419] text-[#f2ece2] disabled:opacity-50"
+                className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611] disabled:opacity-50"
               />
             </Field>
           </div>
@@ -151,7 +151,7 @@ export default function Settings() {
               type="number"
               value={settings.default_reorder_level ?? 5}
               onChange={(e) => update('default_reorder_level', parseInt(e.target.value) || 0)}
-              className="w-full px-3 py-2 rounded bg-[#2c2419] text-[#f2ece2]"
+              className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
             />
           </Field>
         </Section>
@@ -162,14 +162,14 @@ export default function Settings() {
               <input
                 value={settings.currency ?? ''}
                 onChange={(e) => update('currency', e.target.value)}
-                className="w-full px-3 py-2 rounded bg-[#2c2419] text-[#f2ece2]"
+                className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
               />
             </Field>
             <Field label="Timezone">
               <input
                 value={settings.timezone ?? ''}
                 onChange={(e) => update('timezone', e.target.value)}
-                className="w-full px-3 py-2 rounded bg-[#2c2419] text-[#f2ece2]"
+                className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
               />
             </Field>
           </div>
@@ -180,7 +180,7 @@ export default function Settings() {
             <input
               value={settings.receipt_footer ?? ''}
               onChange={(e) => update('receipt_footer', e.target.value)}
-              className="w-full px-3 py-2 rounded bg-[#2c2419] text-[#f2ece2]"
+              className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
             />
           </Field>
         </Section>
@@ -191,8 +191,8 @@ export default function Settings() {
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="bg-[#2c2419] rounded-lg p-4 border border-[#33291f]">
-      <h2 className="text-[#d4a24e] font-semibold mb-4">{title}</h2>
+    <div className="bg-white border border-[#ece6da] rounded-xl p-4 shadow-sm">
+      <h2 className="text-[#a17a1f] font-semibold mb-4">{title}</h2>
       <div className="space-y-3">{children}</div>
     </div>
   )
@@ -201,7 +201,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-sm text-[#a89d8f] mb-1">{label}</label>
+      <label className="block text-sm text-[#5c5448] mb-1">{label}</label>
       {children}
     </div>
   )

@@ -24,41 +24,41 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-[#1c1815] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#fdfcfa] flex items-center justify-center px-4">
       <form
         onSubmit={handleLogin}
-        className="bg-[#2c2419] p-8 rounded-lg shadow-lg w-full max-w-sm"
+        className="bg-white p-8 rounded-xl shadow-lg w-full max-w-sm border border-[#ece6da]"
       >
-        <h1 className="text-2xl font-bold text-[#f2ece2] mb-6 text-center">
+        <h1 className="text-2xl font-semibold text-[#1a1611] mb-6 text-center" style={{ fontFamily: 'Georgia, serif' }}>
           Store Login
         </h1>
 
-        <label className="block text-sm text-[#a89d8f] mb-1">Email</label>
+        <label className="block text-sm text-[#5c5448] mb-1">Email</label>
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="w-full mb-4 px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2] outline-none focus:ring-2 focus:ring-[#d4a24e]"
+          className="w-full mb-4 px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611] outline-none focus:ring-2 focus:ring-[#d4a24e]"
         />
 
-        <label className="block text-sm text-[#a89d8f] mb-1">Password</label>
+        <label className="block text-sm text-[#5c5448] mb-1">Password</label>
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          className="w-full mb-4 px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2] outline-none focus:ring-2 focus:ring-[#d4a24e]"
+          className="w-full mb-4 px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611] outline-none focus:ring-2 focus:ring-[#d4a24e]"
         />
 
         {error && (
-          <p className="text-red-400 text-sm mb-4">{error}</p>
+          <p className="text-[#8a332e] text-sm mb-4">{error}</p>
         )}
 
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-[#d4a24e] hover:bg-[#c69144] text-[#1c1815] font-semibold py-2 rounded transition disabled:opacity-50"
+          className="w-full bg-gradient-to-br from-[#e8c568] to-[#d4a24e] hover:from-[#dcb95c] hover:to-[#c69144] text-[#5a4a1f] font-semibold py-2 rounded-lg transition disabled:opacity-50"
         >
           {loading ? 'Logging in...' : 'Log In'}
         </button>

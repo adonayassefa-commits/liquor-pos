@@ -10,7 +10,6 @@ body {
   overflow: hidden;
 }
 
-/* Thin, subtle scrollbars for the areas that DO need to scroll */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -20,11 +19,37 @@ body {
   background: transparent;
 }
 
+:root {
+  --bg-page: #fdfcfa;
+  --bg-sidebar: #faf8f4;
+  --bg-card: #ffffff;
+  --bg-input: #faf8f4;
+  --border: #ece6da;
+  --text-primary: #1a1611;
+  --text-secondary: #5c5448;
+  --text-muted: #6b6156;
+  --scrollbar: #d8d2c8;
+  --scrollbar-hover: #c4bcac;
+}
+
+.dark {
+  --bg-page: #1c1815;
+  --bg-sidebar: #17130f;
+  --bg-card: #2c2419;
+  --bg-input: #3a2f22;
+  --border: #33291f;
+  --text-primary: #f2ece2;
+  --text-secondary: #a89d8f;
+  --text-muted: #8a8177;
+  --scrollbar: #3a2f22;
+  --scrollbar-hover: #4a3d2c;
+}
+
 ::-webkit-scrollbar-thumb {
-  background: #3a2f22;
+  background: var(--scrollbar);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #4a3d2c;
+  background: var(--scrollbar-hover);
 }

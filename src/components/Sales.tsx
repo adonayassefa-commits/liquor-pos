@@ -63,25 +63,25 @@ export default function Sales() {
   )
 
   return (
-    <div className="min-h-screen bg-[#1c1815] p-6">
-      <h1 className="text-2xl font-bold text-[#f2ece2] mb-6">Sales History</h1>
+    <div className="min-h-screen bg-[#fdfcfa] p-6">
+      <h1 className="text-xl font-semibold text-[#1a1611] mb-6" style={{ fontFamily: 'Georgia, serif' }}>Sales History</h1>
 
       <input
         type="text"
         placeholder="Search by receipt number or cashier..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="w-full mb-4 px-3 py-2 rounded bg-[#2c2419] text-[#f2ece2] outline-none focus:ring-2 focus:ring-[#d4a24e]"
+        className="w-full mb-4 px-3 py-2 rounded-lg bg-white border border-[#ece6da] text-[#1a1611] outline-none focus:ring-2 focus:ring-[#d4a24e]"
       />
 
       {loading ? (
-        <p className="text-[#8a8177]">Loading...</p>
+        <p className="text-[#6b6156]">Loading...</p>
       ) : filtered.length === 0 ? (
-        <p className="text-[#8a8177]">No sales found.</p>
+        <p className="text-[#6b6156]">No sales found.</p>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-[#33291f]">
-          <table className="w-full text-left text-[#f2ece2]">
-            <thead className="bg-[#2c2419] text-[#a89d8f] text-sm uppercase">
+        <div className="overflow-x-auto rounded-xl border border-[#ece6da] bg-white shadow-sm">
+          <table className="w-full text-left text-[#1a1611]">
+            <thead className="bg-[#faf8f4] text-[#5c5448] text-sm uppercase">
               <tr>
                 <th className="px-4 py-3">Receipt #</th>
                 <th className="px-4 py-3">Date</th>
@@ -93,9 +93,9 @@ export default function Sales() {
             </thead>
             <tbody>
               {filtered.map((s) => (
-                <tr key={s.id} className="border-t border-[#33291f] hover:bg-[#2c2419]/50">
+                <tr key={s.id} className="border-t border-[#ece6da] hover:bg-[#faf8f4]">
                   <td className="px-4 py-3 font-mono text-sm">{s.receipt_number}</td>
-                  <td className="px-4 py-3 text-[#8a8177] text-sm">
+                  <td className="px-4 py-3 text-[#6b6156] text-sm">
                     {new Date(s.created_at).toLocaleString()}
                   </td>
                   <td className="px-4 py-3">{s.profiles?.full_name ?? s.profiles?.email ?? '—'}</td>
@@ -104,17 +104,17 @@ export default function Sales() {
                     <span
                       className={
                         s.status === 'completed'
-                          ? 'text-green-400'
+                          ? 'text-[#1f7a3d]'
                           : s.status === 'returned'
-                          ? 'text-red-400'
-                          : 'text-yellow-400'
+                          ? 'text-[#8a332e]'
+                          : 'text-[#8a611a]'
                       }
                     >
                       {s.status}
                     </span>
                   </td>
                   <td className="px-4 py-3">
-                    <button onClick={() => viewSale(s)} className="text-[#d4a24e] hover:underline text-sm">
+                    <button onClick={() => viewSale(s)} className="text-[#a17a1f] hover:underline text-sm">
                       View
                     </button>
                   </td>
@@ -126,23 +126,23 @@ export default function Sales() {
       )}
 
       {selectedSale && !showReturnForm && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
-          <div className="bg-[#2c2419] p-6 rounded-lg w-full max-w-lg">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
+          <div className="bg-white p-6 rounded-xl w-full max-w-lg shadow-lg">
             <div className="flex justify-between items-start mb-4">
               <div>
-                <h2 className="text-xl font-bold text-[#f2ece2]">{selectedSale.receipt_number}</h2>
-                <p className="text-[#8a8177] text-sm">
+                <h2 className="text-lg font-semibold text-[#1a1611]">{selectedSale.receipt_number}</h2>
+                <p className="text-[#6b6156] text-sm">
                   {new Date(selectedSale.created_at).toLocaleString()} ·{' '}
                   {selectedSale.profiles?.full_name ?? selectedSale.profiles?.email}
                 </p>
               </div>
-              <button onClick={() => setSelectedSale(null)} className="text-[#8a8177] hover:text-[#f2ece2] text-xl">
+              <button onClick={() => setSelectedSale(null)} className="text-[#6b6156] hover:text-[#1a1611] text-xl">
                 ✕
               </button>
             </div>
 
-            <table className="w-full text-[#f2ece2] text-sm mb-4">
-              <thead className="text-[#8a8177] text-left">
+            <table className="w-full text-[#1a1611] text-sm mb-4">
+              <thead className="text-[#6b6156] text-left">
                 <tr>
                   <th className="pb-2">Product</th>
                   <th className="pb-2">Qty</th>
@@ -152,7 +152,7 @@ export default function Sales() {
               </thead>
               <tbody>
                 {saleItems.map((item) => (
-                  <tr key={item.id} className="border-t border-[#33291f]">
+                  <tr key={item.id} className="border-t border-[#ece6da]">
                     <td className="py-2">{item.products?.name}</td>
                     <td className="py-2">{item.quantity}</td>
                     <td className="py-2">{item.unit_price.toFixed(2)}</td>
@@ -162,23 +162,23 @@ export default function Sales() {
               </tbody>
             </table>
 
-            <div className="border-t border-[#33291f] pt-3 space-y-1 text-right mb-4">
-              <p className="text-[#f2ece2] font-bold text-lg">Total: {selectedSale.total.toFixed(2)}</p>
-              <p className="text-[#8a8177] text-sm">Paid: {selectedSale.amount_paid.toFixed(2)}</p>
-              <p className="text-[#8a8177] text-sm">Change: {selectedSale.change_due.toFixed(2)}</p>
+            <div className="border-t border-[#ece6da] pt-3 space-y-1 text-right mb-4">
+              <p className="text-[#1a1611] font-bold text-lg">Total: {selectedSale.total.toFixed(2)}</p>
+              <p className="text-[#6b6156] text-sm">Paid: {selectedSale.amount_paid.toFixed(2)}</p>
+              <p className="text-[#6b6156] text-sm">Change: {selectedSale.change_due.toFixed(2)}</p>
             </div>
 
             <div className="flex gap-2">
               <button
                 onClick={() => window.print()}
-                className="flex-1 bg-[#d4a24e] hover:bg-[#c69144] text-[#1c1815] py-2 rounded font-semibold"
+                className="flex-1 bg-gradient-to-br from-[#e8c568] to-[#d4a24e] text-[#5a4a1f] py-2 rounded-lg font-semibold"
               >
                 Print Receipt
               </button>
               {selectedSale.status === 'completed' && (
                 <button
                   onClick={() => setShowReturnForm(true)}
-                  className="flex-1 bg-[#963a35] hover:bg-[#7d2f2b] text-[#f2ece2] py-2 rounded font-semibold"
+                  className="flex-1 bg-[#a3413a] hover:bg-[#8a332e] text-white py-2 rounded-lg font-semibold"
                 >
                   Process Return
                 </button>
@@ -258,12 +258,12 @@ function ReturnForm({
   }
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
-      <div className="bg-[#2c2419] p-6 rounded-lg w-full max-w-lg space-y-3">
-        <h2 className="text-xl font-bold text-[#f2ece2]">Process Return — {sale.receipt_number}</h2>
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
+      <div className="bg-white p-6 rounded-xl w-full max-w-lg space-y-3 shadow-lg">
+        <h2 className="text-lg font-semibold text-[#1a1611]">Process Return — {sale.receipt_number}</h2>
 
-        <table className="w-full text-[#f2ece2] text-sm">
-          <thead className="text-[#8a8177] text-left">
+        <table className="w-full text-[#1a1611] text-sm">
+          <thead className="text-[#6b6156] text-left">
             <tr>
               <th className="pb-2">Product</th>
               <th className="pb-2">Purchased</th>
@@ -272,7 +272,7 @@ function ReturnForm({
           </thead>
           <tbody>
             {saleItems.map((item) => (
-              <tr key={item.id} className="border-t border-[#33291f]">
+              <tr key={item.id} className="border-t border-[#ece6da]">
                 <td className="py-2">{item.products?.name}</td>
                 <td className="py-2">{item.quantity}</td>
                 <td className="py-2">
@@ -282,7 +282,7 @@ function ReturnForm({
                     max={item.quantity}
                     value={quantities[item.id] ?? 0}
                     onChange={(e) => setQty(item.id, parseInt(e.target.value) || 0, item.quantity)}
-                    className="w-16 px-2 py-1 rounded bg-[#3a2f22] text-[#f2ece2]"
+                    className="w-16 px-2 py-1 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
                   />
                 </td>
               </tr>
@@ -291,27 +291,27 @@ function ReturnForm({
         </table>
 
         <div>
-          <label className="block text-sm text-[#a89d8f] mb-1">Reason *</label>
+          <label className="block text-sm text-[#5c5448] mb-1">Reason *</label>
           <textarea
             value={reason}
             onChange={(e) => setReason(e.target.value)}
             rows={2}
-            className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]"
+            className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
           />
         </div>
 
-        <p className="text-[#f2ece2] font-bold text-right">Refund Total: {totalRefund.toFixed(2)}</p>
+        <p className="text-[#1a1611] font-bold text-right">Refund Total: {totalRefund.toFixed(2)}</p>
 
-        {error && <p className="text-red-400 text-sm">{error}</p>}
+        {error && <p className="text-[#8a332e] text-sm">{error}</p>}
 
         <div className="flex justify-end gap-2">
-          <button onClick={onClose} className="px-4 py-2 rounded text-[#a89d8f] hover:bg-[#3a2f22]">
+          <button onClick={onClose} className="px-4 py-2 rounded-lg text-[#6b6156] hover:bg-[#faf8f4]">
             Cancel
           </button>
           <button
             onClick={handleSubmit}
             disabled={saving}
-            className="px-4 py-2 rounded bg-[#963a35] hover:bg-[#7d2f2b] text-[#f2ece2] font-semibold disabled:opacity-50"
+            className="px-4 py-2 rounded-lg bg-[#a3413a] hover:bg-[#8a332e] text-white font-semibold disabled:opacity-50"
           >
             {saving ? 'Processing...' : 'Confirm Return'}
           </button>

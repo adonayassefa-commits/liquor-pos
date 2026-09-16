@@ -54,25 +54,25 @@ export default function Purchases() {
   }
 
   return (
-    <div className="min-h-screen bg-[#1c1815] p-6">
+    <div className="min-h-screen bg-[#fdfcfa] p-6">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-[#f2ece2]">Purchases</h1>
+        <h1 className="text-xl font-semibold text-[#1a1611]" style={{ fontFamily: 'Georgia, serif' }}>Purchases</h1>
         <button
           onClick={() => setShowForm(true)}
-          className="bg-[#d4a24e] hover:bg-[#c69144] text-[#1c1815] px-4 py-2 rounded font-semibold"
+          className="bg-gradient-to-br from-[#e8c568] to-[#d4a24e] hover:from-[#dcb95c] hover:to-[#c69144] text-[#5a4a1f] px-4 py-2 rounded-lg font-semibold shadow-sm"
         >
           + New Purchase
         </button>
       </div>
 
       {loading ? (
-        <p className="text-[#8a8177]">Loading...</p>
+        <p className="text-[#6b6156]">Loading...</p>
       ) : purchases.length === 0 ? (
-        <p className="text-[#8a8177]">No purchases yet.</p>
+        <p className="text-[#6b6156]">No purchases yet.</p>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-[#33291f]">
-          <table className="w-full text-left text-[#f2ece2]">
-            <thead className="bg-[#2c2419] text-[#a89d8f] text-sm uppercase">
+        <div className="overflow-x-auto rounded-xl border border-[#ece6da] bg-white shadow-sm">
+          <table className="w-full text-left text-[#1a1611]">
+            <thead className="bg-[#faf8f4] text-[#5c5448] text-sm uppercase">
               <tr>
                 <th className="px-4 py-3">Date</th>
                 <th className="px-4 py-3">Supplier</th>
@@ -84,13 +84,13 @@ export default function Purchases() {
             </thead>
             <tbody>
               {purchases.map((p) => (
-                <tr key={p.id} className="border-t border-[#33291f] hover:bg-[#2c2419]/50">
+                <tr key={p.id} className="border-t border-[#ece6da] hover:bg-[#faf8f4]">
                   <td className="px-4 py-3">{p.purchase_date}</td>
                   <td className="px-4 py-3">{p.suppliers?.name ?? '—'}</td>
-                  <td className="px-4 py-3 text-[#8a8177]">{p.invoice_number ?? '—'}</td>
+                  <td className="px-4 py-3 text-[#6b6156]">{p.invoice_number ?? '—'}</td>
                   <td className="px-4 py-3">{p.grand_total.toFixed(2)}</td>
                   <td className="px-4 py-3">
-                    <span className={p.status === 'received' ? 'text-green-400' : 'text-yellow-400'}>
+                    <span className={p.status === 'received' ? 'text-[#1f7a3d]' : 'text-[#8a611a]'}>
                       {p.status}
                     </span>
                   </td>
@@ -99,7 +99,7 @@ export default function Purchases() {
                       <button
                         onClick={() => handleReceive(p.id)}
                         disabled={receivingId === p.id}
-                        className="text-[#d4a24e] hover:underline disabled:opacity-50"
+                        className="text-[#a17a1f] hover:underline disabled:opacity-50"
                       >
                         {receivingId === p.id ? 'Receiving...' : 'Mark Received'}
                       </button>
@@ -199,82 +199,82 @@ function NewPurchaseForm({ onClose, onSaved }: { onClose: () => void; onSaved: (
   }
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
-      <div className="bg-[#2c2419] p-6 rounded-lg w-full max-w-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-        <h2 className="text-xl font-bold text-[#f2ece2]">New Purchase</h2>
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
+      <div className="bg-white p-6 rounded-xl w-full max-w-2xl space-y-4 max-h-[90vh] overflow-y-auto shadow-lg">
+        <h2 className="text-lg font-semibold text-[#1a1611]">New Purchase</h2>
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm text-[#a89d8f] mb-1">Supplier *</label>
+            <label className="block text-sm text-[#5c5448] mb-1">Supplier *</label>
             <select value={supplierId} onChange={(e) => setSupplierId(e.target.value)}
-              className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]">
+              className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]">
               <option value="">— Select —</option>
               {suppliers.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
           </div>
           <div>
-            <label className="block text-sm text-[#a89d8f] mb-1">Invoice Number</label>
+            <label className="block text-sm text-[#5c5448] mb-1">Invoice Number</label>
             <input value={invoiceNumber} onChange={(e) => setInvoiceNumber(e.target.value)}
-              className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]" />
+              className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]" />
           </div>
         </div>
 
-        <div className="border-t border-[#33291f] pt-3">
-          <h3 className="text-[#f2ece2] font-semibold mb-2">Add Products</h3>
+        <div className="border-t border-[#ece6da] pt-3">
+          <h3 className="text-[#1a1611] font-semibold mb-2">Add Products</h3>
           <div className="grid grid-cols-4 gap-2">
             <select value={selectedProductId} onChange={(e) => {
               setSelectedProductId(e.target.value)
               const p = products.find((p) => p.id === e.target.value)
               if (p) setUnitCost(p.cost_price.toString())
-            }} className="col-span-2 px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]">
+            }} className="col-span-2 px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]">
               <option value="">— Select product —</option>
               {products.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
             </select>
             <input type="number" placeholder="Qty" value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
-              className="px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]" />
+              className="px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]" />
             <input type="number" step="0.01" placeholder="Unit cost" value={unitCost}
               onChange={(e) => setUnitCost(e.target.value)}
-              className="px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]" />
+              className="px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]" />
           </div>
           <button onClick={addLineItem} type="button"
-            className="mt-2 text-[#d4a24e] text-sm hover:underline">
+            className="mt-2 text-[#a17a1f] text-sm hover:underline">
             + Add to purchase
           </button>
         </div>
 
         {items.length > 0 && (
-          <div className="border-t border-[#33291f] pt-3">
-            <table className="w-full text-[#f2ece2] text-sm">
-              <thead className="text-[#8a8177] text-left">
+          <div className="border-t border-[#ece6da] pt-3">
+            <table className="w-full text-[#1a1611] text-sm">
+              <thead className="text-[#6b6156] text-left">
                 <tr><th>Product</th><th>Qty</th><th>Unit Cost</th><th>Total</th><th></th></tr>
               </thead>
               <tbody>
                 {items.map((item, i) => (
-                  <tr key={i} className="border-t border-[#33291f]">
+                  <tr key={i} className="border-t border-[#ece6da]">
                     <td className="py-1">{item.product_name}</td>
                     <td>{item.quantity}</td>
                     <td>{item.unit_cost.toFixed(2)}</td>
                     <td>{(item.quantity * item.unit_cost).toFixed(2)}</td>
                     <td>
-                      <button onClick={() => removeLineItem(i)} className="text-red-400">✕</button>
+                      <button onClick={() => removeLineItem(i)} className="text-[#8a332e]">✕</button>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-            <p className="text-[#f2ece2] font-bold text-right mt-2">Total: {total.toFixed(2)}</p>
+            <p className="text-[#1a1611] font-bold text-right mt-2">Total: {total.toFixed(2)}</p>
           </div>
         )}
 
-        {error && <p className="text-red-400 text-sm">{error}</p>}
+        {error && <p className="text-[#8a332e] text-sm">{error}</p>}
 
         <div className="flex justify-end gap-2 pt-2">
-          <button onClick={onClose} type="button" className="px-4 py-2 rounded text-[#a89d8f] hover:bg-[#3a2f22]">
+          <button onClick={onClose} type="button" className="px-4 py-2 rounded-lg text-[#6b6156] hover:bg-[#faf8f4]">
             Cancel
           </button>
           <button onClick={handleSubmit} disabled={saving}
-            className="px-4 py-2 rounded bg-[#d4a24e] hover:bg-[#c69144] text-[#1c1815] font-semibold disabled:opacity-50">
+            className="px-4 py-2 rounded-lg bg-gradient-to-br from-[#e8c568] to-[#d4a24e] text-[#5a4a1f] font-semibold disabled:opacity-50">
             {saving ? 'Saving...' : 'Save as Draft'}
           </button>
         </div>

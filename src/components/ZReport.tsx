@@ -101,30 +101,30 @@ export default function ZReport() {
   const difference = report ? counted - report.netCashExpected : 0
 
   return (
-    <div className="min-h-screen bg-[#1c1815] p-6 max-w-3xl">
-      <h1 className="text-2xl font-bold text-[#f2ece2] mb-6">End of Day Report</h1>
+    <div className="min-h-screen bg-[#fdfcfa] p-6 max-w-3xl">
+      <h1 className="text-xl font-semibold text-[#1a1611] mb-6" style={{ fontFamily: 'Georgia, serif' }}>End of Day Report</h1>
 
-      <div className="flex items-end gap-3 bg-[#2c2419] p-4 rounded-lg mb-6">
+      <div className="flex items-end gap-3 bg-white border border-[#ece6da] p-4 rounded-xl mb-6 shadow-sm">
         <div>
-          <label className="block text-sm text-[#a89d8f] mb-1">Date</label>
+          <label className="block text-sm text-[#5c5448] mb-1">Date</label>
           <input
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]"
+            className="px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
           />
         </div>
         <button
           onClick={runReport}
           disabled={loading}
-          className="bg-[#d4a24e] hover:bg-[#c69144] text-[#1c1815] px-4 py-2 rounded font-semibold disabled:opacity-50"
+          className="bg-gradient-to-br from-[#e8c568] to-[#d4a24e] hover:from-[#dcb95c] hover:to-[#c69144] text-[#5a4a1f] px-4 py-2 rounded-lg font-semibold disabled:opacity-50"
         >
           {loading ? 'Loading...' : 'Run Report'}
         </button>
         {report && (
           <button
             onClick={() => window.print()}
-            className="bg-[#3a2f22] hover:bg-[#4a3d2c] text-[#f2ece2] px-4 py-2 rounded font-semibold"
+            className="bg-[#faf8f4] hover:bg-[#f0ece5] text-[#1a1611] px-4 py-2 rounded-lg font-semibold border border-[#ece6da]"
           >
             Print
           </button>
@@ -133,8 +133,8 @@ export default function ZReport() {
 
       {report && (
         <div className="space-y-6">
-          <section className="bg-[#2c2419] rounded-lg p-4">
-            <h2 className="text-[#d4a24e] font-semibold mb-3">Sales Summary</h2>
+          <section className="bg-white border border-[#ece6da] rounded-xl p-4 shadow-sm">
+            <h2 className="text-[#a17a1f] font-semibold mb-3">Sales Summary</h2>
             <Row label="Total Sales" value={report.totalSales.toFixed(2)} />
             <Row label="Transactions" value={report.transactionCount.toString()} />
             <Row label="Gross Profit" value={report.grossProfit.toFixed(2)} accent />
@@ -142,10 +142,10 @@ export default function ZReport() {
             <Row label="Total Tax Collected" value={report.totalTax.toFixed(2)} />
           </section>
 
-          <section className="bg-[#2c2419] rounded-lg p-4">
-            <h2 className="text-[#d4a24e] font-semibold mb-3">Payment Breakdown</h2>
+          <section className="bg-white border border-[#ece6da] rounded-xl p-4 shadow-sm">
+            <h2 className="text-[#a17a1f] font-semibold mb-3">Payment Breakdown</h2>
             {report.paymentBreakdown.length === 0 ? (
-              <p className="text-[#8a8177] text-sm">No sales recorded</p>
+              <p className="text-[#6b6156] text-sm">No sales recorded</p>
             ) : (
               report.paymentBreakdown.map((p, i) => (
                 <Row key={i} label={p.method} value={p.amount.toFixed(2)} />
@@ -153,28 +153,28 @@ export default function ZReport() {
             )}
           </section>
 
-          <section className="bg-[#2c2419] rounded-lg p-4">
-            <h2 className="text-[#d4a24e] font-semibold mb-3">Returns & Expenses</h2>
+          <section className="bg-white border border-[#ece6da] rounded-xl p-4 shadow-sm">
+            <h2 className="text-[#a17a1f] font-semibold mb-3">Returns & Expenses</h2>
             <Row label="Refunds Processed" value={`${report.refundCount} (${report.totalRefunds.toFixed(2)})`} warn={report.totalRefunds > 0} />
             <Row label="Expenses Today" value={report.totalExpenses.toFixed(2)} />
           </section>
 
-          <section className="bg-[#2c2419] rounded-lg p-4">
-            <h2 className="text-[#d4a24e] font-semibold mb-3">Cash Reconciliation</h2>
+          <section className="bg-white border border-[#ece6da] rounded-xl p-4 shadow-sm">
+            <h2 className="text-[#a17a1f] font-semibold mb-3">Cash Reconciliation</h2>
             <Row label="Expected Cash (Cash payments − refunds)" value={report.netCashExpected.toFixed(2)} />
             <div className="mt-2">
-              <label className="block text-sm text-[#a89d8f] mb-1">Actual Cash Counted</label>
+              <label className="block text-sm text-[#5c5448] mb-1">Actual Cash Counted</label>
               <input
                 type="number"
                 step="0.01"
                 value={cashCounted}
                 onChange={(e) => setCashCounted(e.target.value)}
-                className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]"
+                className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
                 placeholder="Count the drawer and enter amount"
               />
             </div>
             {cashCounted !== '' && (
-              <p className={`mt-2 font-semibold ${difference === 0 ? 'text-green-400' : 'text-red-400'}`}>
+              <p className={`mt-2 font-semibold ${difference === 0 ? 'text-[#1f7a3d]' : 'text-[#8a332e]'}`}>
                 Difference: {difference > 0 ? '+' : ''}{difference.toFixed(2)}
                 {difference === 0 ? ' (Balanced)' : difference > 0 ? ' (Over)' : ' (Short)'}
               </p>
@@ -184,7 +184,7 @@ export default function ZReport() {
       )}
 
       {!report && !loading && (
-        <p className="text-[#8a8177]">Select a date and click "Run Report" to close out the register.</p>
+        <p className="text-[#6b6156]">Select a date and click "Run Report" to close out the register.</p>
       )}
     </div>
   )
@@ -192,9 +192,9 @@ export default function ZReport() {
 
 function Row({ label, value, accent, warn }: { label: string; value: string; accent?: boolean; warn?: boolean }) {
   return (
-    <div className="flex justify-between py-1.5 border-b border-[#33291f] last:border-0">
-      <span className="text-[#a89d8f] text-sm">{label}</span>
-      <span className={`text-sm font-semibold ${warn ? 'text-red-400' : accent ? 'text-[#d4a24e]' : 'text-[#f2ece2]'}`}>
+    <div className="flex justify-between py-1.5 border-b border-[#ece6da] last:border-0">
+      <span className="text-[#5c5448] text-sm">{label}</span>
+      <span className={`text-sm font-semibold ${warn ? 'text-[#8a332e]' : accent ? 'text-[#215c37]' : 'text-[#1a1611]'}`}>
         {value}
       </span>
     </div>

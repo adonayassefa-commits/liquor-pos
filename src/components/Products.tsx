@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import JsBarcode from 'jsbarcode'
 import { supabase } from '../lib/supabaseClient'
-import { TableRowSkeleton } from './Skeleton'
 
 type Category = {
   id: string
@@ -75,7 +74,6 @@ export default function Products({ canEdit }: Props) {
     }
   }
 
-  // If a product has no barcode yet, generate one from its ID so it can still be printed
   function ensureBarcodeValue(p: Product): string {
     return p.barcode || p.sku || p.id.replace(/-/g, '').slice(0, 12).toUpperCase()
   }
@@ -91,16 +89,16 @@ export default function Products({ canEdit }: Props) {
   }
 
   return (
-    <div className="min-h-screen bg-[#1c1815] p-6">
+    <div className="min-h-screen bg-[#fdfcfa] p-6">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-[#f2ece2]">Products</h1>
+        <h1 className="text-xl font-semibold text-[#1a1611]" style={{ fontFamily: 'Georgia, serif' }}>Products</h1>
         {canEdit && (
           <button
             onClick={() => {
               setEditingProduct(null)
               setShowForm(true)
             }}
-            className="bg-[#d4a24e] hover:bg-[#c69144] text-[#1c1815] px-4 py-2 rounded font-semibold"
+            className="bg-gradient-to-br from-[#e8c568] to-[#d4a24e] hover:from-[#dcb95c] hover:to-[#c69144] text-[#5a4a1f] px-4 py-2 rounded-lg font-semibold shadow-sm"
           >
             + Add Product
           </button>
@@ -112,36 +110,17 @@ export default function Products({ canEdit }: Props) {
         placeholder="Search by name, SKU, or barcode..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="w-full mb-4 px-3 py-2 rounded bg-[#2c2419] text-[#f2ece2] outline-none focus:ring-2 focus:ring-[#d4a24e]"
+        className="w-full mb-4 px-3 py-2 rounded-lg bg-white border border-[#ece6da] text-[#1a1611] outline-none focus:ring-2 focus:ring-[#d4a24e]"
       />
 
-            {loading ? (
-        <div className="overflow-x-auto rounded-lg border border-[#33291f]">
-          <table className="w-full text-left text-[#f2ece2]">
-            <thead className="bg-[#2c2419] text-[#a89d8f] text-sm uppercase">
-              <tr>
-                <th className="px-4 py-3">Name</th>
-                <th className="px-4 py-3">SKU</th>
-                <th className="px-4 py-3">Category</th>
-                <th className="px-4 py-3">Cost</th>
-                <th className="px-4 py-3">Price</th>
-                <th className="px-4 py-3">Stock</th>
-                <th className="px-4 py-3">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <TableRowSkeleton columns={7} />
-              <TableRowSkeleton columns={7} />
-              <TableRowSkeleton columns={7} />
-            </tbody>
-          </table>
-        </div>
+      {loading ? (
+        <p className="text-[#6b6156]">Loading products...</p>
       ) : filtered.length === 0 ? (
-        <p className="text-[#8a8177]">No products found.</p>
+        <p className="text-[#6b6156]">No products found.</p>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-[#33291f]">
-          <table className="w-full text-left text-[#f2ece2]">
-            <thead className="bg-[#2c2419] text-[#a89d8f] text-sm uppercase">
+        <div className="overflow-x-auto rounded-xl border border-[#ece6da] bg-white shadow-sm">
+          <table className="w-full text-left text-[#1a1611]">
+            <thead className="bg-[#faf8f4] text-[#5c5448] text-sm uppercase">
               <tr>
                 <th className="px-4 py-3">Name</th>
                 <th className="px-4 py-3">SKU</th>
@@ -154,21 +133,21 @@ export default function Products({ canEdit }: Props) {
             </thead>
             <tbody>
               {filtered.map((p) => (
-                <tr key={p.id} className="border-t border-[#33291f] hover:bg-[#2c2419]/50">
+                <tr key={p.id} className="border-t border-[#ece6da] hover:bg-[#faf8f4]">
                   <td className="px-4 py-3 font-medium">{p.name}</td>
-                  <td className="px-4 py-3 text-[#8a8177]">{p.sku ?? '—'}</td>
-                  <td className="px-4 py-3 text-[#8a8177]">{categoryName(p.category_id)}</td>
+                  <td className="px-4 py-3 text-[#6b6156]">{p.sku ?? '—'}</td>
+                  <td className="px-4 py-3 text-[#6b6156]">{categoryName(p.category_id)}</td>
                   <td className="px-4 py-3">{canEdit ? p.cost_price.toFixed(2) : '—'}</td>
                   <td className="px-4 py-3">{p.selling_price.toFixed(2)}</td>
                   <td className="px-4 py-3">
-                    <span className={p.current_stock <= p.reorder_level ? 'text-red-400 font-semibold' : ''}>
+                    <span className={p.current_stock <= p.reorder_level ? 'text-[#8a332e] font-semibold' : ''}>
                       {p.current_stock}
                     </span>
                   </td>
                   <td className="px-4 py-3 space-x-2 whitespace-nowrap">
                     <button
                       onClick={() => setPrintingProduct(p)}
-                      className="text-[#d4a24e] hover:underline"
+                      className="text-[#a17a1f] hover:underline"
                     >
                       Barcode
                     </button>
@@ -179,13 +158,13 @@ export default function Products({ canEdit }: Props) {
                             setEditingProduct(p)
                             setShowForm(true)
                           }}
-                          className="text-[#d4a24e] hover:underline"
+                          className="text-[#a17a1f] hover:underline"
                         >
                           Edit
                         </button>
                         <button
                           onClick={() => archiveProduct(p.id)}
-                          className="text-red-400 hover:underline"
+                          className="text-[#8a332e] hover:underline"
                         >
                           Archive
                         </button>
@@ -245,17 +224,17 @@ function BarcodeModal({
   }
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
-      <div className="bg-white p-6 rounded-lg w-full max-w-sm text-center print:shadow-none">
-        <p className="text-black font-semibold mb-2">{product.name}</p>
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
+      <div className="bg-white p-6 rounded-xl w-full max-w-sm text-center shadow-lg print:shadow-none">
+        <p className="text-[#1a1611] font-semibold mb-2">{product.name}</p>
         <svg ref={svgRef} className="mx-auto" />
         <div className="flex justify-center gap-2 mt-4 print:hidden">
-          <button onClick={onClose} className="px-4 py-2 rounded text-gray-600 hover:bg-gray-100">
+          <button onClick={onClose} className="px-4 py-2 rounded-lg text-[#6b6156] hover:bg-[#faf8f4]">
             Close
           </button>
           <button
             onClick={handlePrint}
-            className="px-4 py-2 rounded bg-[#d4a24e] hover:bg-[#c69144] text-[#1c1815] font-semibold"
+            className="px-4 py-2 rounded-lg bg-gradient-to-br from-[#e8c568] to-[#d4a24e] text-[#5a4a1f] font-semibold"
           >
             Print
           </button>
@@ -317,51 +296,51 @@ function ProductForm({
   }
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
       <form
         onSubmit={handleSubmit}
-        className="bg-[#2c2419] p-6 rounded-lg w-full max-w-md space-y-3"
+        className="bg-white p-6 rounded-xl w-full max-w-md space-y-3 shadow-lg"
       >
-        <h2 className="text-xl font-bold text-[#f2ece2] mb-2">
+        <h2 className="text-lg font-semibold text-[#1a1611] mb-2">
           {product ? 'Edit Product' : 'Add Product'}
         </h2>
 
         <div>
-          <label className="block text-sm text-[#a89d8f] mb-1">Name *</label>
+          <label className="block text-sm text-[#5c5448] mb-1">Name *</label>
           <input
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]"
+            className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
           />
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm text-[#a89d8f] mb-1">SKU</label>
+            <label className="block text-sm text-[#5c5448] mb-1">SKU</label>
             <input
               value={sku}
               onChange={(e) => setSku(e.target.value)}
-              className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]"
+              className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
             />
           </div>
           <div>
-            <label className="block text-sm text-[#a89d8f] mb-1">Barcode</label>
+            <label className="block text-sm text-[#5c5448] mb-1">Barcode</label>
             <input
               value={barcode}
               onChange={(e) => setBarcode(e.target.value)}
               placeholder="Leave blank to auto-generate"
-              className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]"
+              className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm text-[#a89d8f] mb-1">Category</label>
+          <label className="block text-sm text-[#5c5448] mb-1">Category</label>
           <select
             value={categoryId}
             onChange={(e) => setCategoryId(e.target.value)}
-            className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]"
+            className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
           >
             <option value="">— None —</option>
             {categories.map((c) => (
@@ -372,60 +351,60 @@ function ProductForm({
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm text-[#a89d8f] mb-1">Cost Price</label>
+            <label className="block text-sm text-[#5c5448] mb-1">Cost Price</label>
             <input
               type="number" step="0.01"
               value={costPrice}
               onChange={(e) => setCostPrice(e.target.value)}
-              className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]"
+              className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
             />
           </div>
           <div>
-            <label className="block text-sm text-[#a89d8f] mb-1">Selling Price *</label>
+            <label className="block text-sm text-[#5c5448] mb-1">Selling Price *</label>
             <input
               required type="number" step="0.01"
               value={sellingPrice}
               onChange={(e) => setSellingPrice(e.target.value)}
-              className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]"
+              className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
             />
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm text-[#a89d8f] mb-1">Current Stock</label>
+            <label className="block text-sm text-[#5c5448] mb-1">Current Stock</label>
             <input
               type="number"
               value={currentStock}
               onChange={(e) => setCurrentStock(e.target.value)}
-              className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]"
+              className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
             />
           </div>
           <div>
-            <label className="block text-sm text-[#a89d8f] mb-1">Reorder Level</label>
+            <label className="block text-sm text-[#5c5448] mb-1">Reorder Level</label>
             <input
               type="number"
               value={reorderLevel}
               onChange={(e) => setReorderLevel(e.target.value)}
-              className="w-full px-3 py-2 rounded bg-[#3a2f22] text-[#f2ece2]"
+              className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
             />
           </div>
         </div>
 
-        {error && <p className="text-red-400 text-sm">{error}</p>}
+        {error && <p className="text-[#8a332e] text-sm">{error}</p>}
 
         <div className="flex justify-end gap-2 pt-2">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded text-[#a89d8f] hover:bg-[#3a2f22]"
+            className="px-4 py-2 rounded-lg text-[#6b6156] hover:bg-[#faf8f4]"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={saving}
-            className="px-4 py-2 rounded bg-[#d4a24e] hover:bg-[#c69144] text-[#1c1815] font-semibold disabled:opacity-50"
+            className="px-4 py-2 rounded-lg bg-gradient-to-br from-[#e8c568] to-[#d4a24e] text-[#5a4a1f] font-semibold disabled:opacity-50"
           >
             {saving ? 'Saving...' : 'Save'}
           </button>
