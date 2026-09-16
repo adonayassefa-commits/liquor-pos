@@ -142,7 +142,7 @@ function App() {
   function renderPage() {
     switch (page) {
       case 'dashboard':
-        return <Dashboard />
+      return <Dashboard lang={lang} />
       case 'pos':
         return <POS />
       case 'products':
@@ -152,7 +152,7 @@ function App() {
       case 'purchases':
         return <Purchases />
       case 'sales':
-        return <Sales />
+        return <Sales lang={lang} />
       case 'inventory':
         return <Inventory />
       case 'reports':
@@ -212,8 +212,8 @@ function App() {
 
       <div className="flex-1 flex flex-col min-w-0 h-screen">
         <div
-          className="flex items-center justify-between px-4 md:px-6 py-3 shrink-0 border-b-2 border-[#d4a24e]"
-          style={{ background: 'linear-gradient(135deg, #3a6fd8, #4f8bf5)' }}
+          className="flex flex-nowrap items-center justify-between px-4 md:px-6 py-3 shrink-0 border-b-2 border-[#d4a24e]"
+          style={{ background: 'var(--header-bg)' }}
         >
           <div className="hidden md:block">
             <GlobalSearch onNavigate={setPage} placeholder={t('search', lang)} />
@@ -225,7 +225,7 @@ function App() {
             </span>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={toggleTheme}
               className="p-1.5 rounded-full bg-white/15 border border-white/25 text-white"

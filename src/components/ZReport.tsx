@@ -101,17 +101,17 @@ export default function ZReport() {
   const difference = report ? counted - report.netCashExpected : 0
 
   return (
-    <div className="min-h-screen bg-[#fdfcfa] p-6 max-w-3xl">
-      <h1 className="text-xl font-semibold text-[#1a1611] mb-6" style={{ fontFamily: 'Georgia, serif' }}>End of Day Report</h1>
+    <div className="min-h-screen bg-[var(--bg-page)] p-6 max-w-3xl">
+      <h1 className="text-xl font-semibold text-[var(--text-primary)] mb-6" style={{ fontFamily: 'Georgia, serif' }}>End of Day Report</h1>
 
-      <div className="flex items-end gap-3 bg-white border border-[#ece6da] p-4 rounded-xl mb-6 shadow-sm">
+      <div className="flex items-end gap-3 bg-[var(--bg-card)] border border-[var(--border)] p-4 rounded-xl mb-6 shadow-sm">
         <div>
-          <label className="block text-sm text-[#5c5448] mb-1">Date</label>
+          <label className="block text-sm text-[var(--text-secondary)] mb-1">Date</label>
           <input
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
+            className="px-3 py-2 rounded-lg bg-[var(--bg-input)] border border-[var(--border)] text-[var(--text-primary)]"
           />
         </div>
         <button
@@ -124,7 +124,7 @@ export default function ZReport() {
         {report && (
           <button
             onClick={() => window.print()}
-            className="bg-[#faf8f4] hover:bg-[#f0ece5] text-[#1a1611] px-4 py-2 rounded-lg font-semibold border border-[#ece6da]"
+            className="bg-[var(--bg-input)] hover:opacity-80 text-[var(--text-primary)] px-4 py-2 rounded-lg font-semibold border border-[var(--border)]"
           >
             Print
           </button>
@@ -133,7 +133,7 @@ export default function ZReport() {
 
       {report && (
         <div className="space-y-6">
-          <section className="bg-white border border-[#ece6da] rounded-xl p-4 shadow-sm">
+          <section className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
             <h2 className="text-[#a17a1f] font-semibold mb-3">Sales Summary</h2>
             <Row label="Total Sales" value={report.totalSales.toFixed(2)} />
             <Row label="Transactions" value={report.transactionCount.toString()} />
@@ -142,10 +142,10 @@ export default function ZReport() {
             <Row label="Total Tax Collected" value={report.totalTax.toFixed(2)} />
           </section>
 
-          <section className="bg-white border border-[#ece6da] rounded-xl p-4 shadow-sm">
+          <section className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
             <h2 className="text-[#a17a1f] font-semibold mb-3">Payment Breakdown</h2>
             {report.paymentBreakdown.length === 0 ? (
-              <p className="text-[#6b6156] text-sm">No sales recorded</p>
+              <p className="text-[var(--text-muted)] text-sm">No sales recorded</p>
             ) : (
               report.paymentBreakdown.map((p, i) => (
                 <Row key={i} label={p.method} value={p.amount.toFixed(2)} />
@@ -153,23 +153,23 @@ export default function ZReport() {
             )}
           </section>
 
-          <section className="bg-white border border-[#ece6da] rounded-xl p-4 shadow-sm">
+          <section className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
             <h2 className="text-[#a17a1f] font-semibold mb-3">Returns & Expenses</h2>
             <Row label="Refunds Processed" value={`${report.refundCount} (${report.totalRefunds.toFixed(2)})`} warn={report.totalRefunds > 0} />
             <Row label="Expenses Today" value={report.totalExpenses.toFixed(2)} />
           </section>
 
-          <section className="bg-white border border-[#ece6da] rounded-xl p-4 shadow-sm">
+          <section className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
             <h2 className="text-[#a17a1f] font-semibold mb-3">Cash Reconciliation</h2>
             <Row label="Expected Cash (Cash payments − refunds)" value={report.netCashExpected.toFixed(2)} />
             <div className="mt-2">
-              <label className="block text-sm text-[#5c5448] mb-1">Actual Cash Counted</label>
+              <label className="block text-sm text-[var(--text-secondary)] mb-1">Actual Cash Counted</label>
               <input
                 type="number"
                 step="0.01"
                 value={cashCounted}
                 onChange={(e) => setCashCounted(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
+                className="w-full px-3 py-2 rounded-lg bg-[var(--bg-input)] border border-[var(--border)] text-[var(--text-primary)]"
                 placeholder="Count the drawer and enter amount"
               />
             </div>
@@ -184,7 +184,7 @@ export default function ZReport() {
       )}
 
       {!report && !loading && (
-        <p className="text-[#6b6156]">Select a date and click "Run Report" to close out the register.</p>
+        <p className="text-[var(--text-muted)]">Select a date and click "Run Report" to close out the register.</p>
       )}
     </div>
   )
@@ -192,9 +192,9 @@ export default function ZReport() {
 
 function Row({ label, value, accent, warn }: { label: string; value: string; accent?: boolean; warn?: boolean }) {
   return (
-    <div className="flex justify-between py-1.5 border-b border-[#ece6da] last:border-0">
-      <span className="text-[#5c5448] text-sm">{label}</span>
-      <span className={`text-sm font-semibold ${warn ? 'text-[#8a332e]' : accent ? 'text-[#215c37]' : 'text-[#1a1611]'}`}>
+    <div className="flex justify-between py-1.5 border-b border-[var(--border)] last:border-0">
+      <span className="text-[var(--text-secondary)] text-sm">{label}</span>
+      <span className={`text-sm font-semibold ${warn ? 'text-[#8a332e]' : accent ? 'text-[#215c37]' : 'text-[var(--text-primary)]'}`}>
         {value}
       </span>
     </div>

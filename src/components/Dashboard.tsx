@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
 import { formatEthiopianDate } from '../ethiopianDate'
-import { getLanguage } from '../i18n'
+import { t, type Language } from '../i18n'
 
 type Stats = {
   todaySales: number
@@ -21,7 +21,7 @@ type BestSeller = {
   total_sold: number
 }
 
-export default function Dashboard() {
+export default function Dashboard({ lang = 'en' }: { lang?: Language }) {
   const [stats, setStats] = useState<Stats | null>(null)
   const [bestSellers, setBestSellers] = useState<BestSeller[]>([])
   const [lowStockProducts, setLowStockProducts] = useState<any[]>([])
@@ -114,7 +114,7 @@ export default function Dashboard() {
   if (loading || !stats) {
     return (
       <div className="min-h-screen bg-[var(--bg-page)] p-6">
-        <p className="text-[var(--text-muted)]">Loading dashboard...</p>
+        <p className="text-[var(--text-muted)]">{t('loadingDashboard', lang)}</p>
       </div>
     )
   }
@@ -123,52 +123,52 @@ export default function Dashboard() {
     <div className="min-h-screen bg-[var(--bg-page)] p-6 space-y-8">
       <div>
         <h1 className="text-xl font-semibold text-[var(--text-primary)]" style={{ fontFamily: 'Georgia, serif' }}>
-          Welcome back
+          {t('welcomeBack', lang)}
         </h1>
         <p className="text-[var(--text-muted)] text-xs uppercase tracking-wide font-medium">
-          {formatEthiopianDate(new Date(), getLanguage())}
+          {formatEthiopianDate(new Date(), lang)}
         </p>
       </div>
 
       <section>
-        <h2 className="text-[var(--text-secondary)] text-xs uppercase tracking-wide font-bold mb-3">Today</h2>
+        <h2 className="text-[var(--text-secondary)] text-xs uppercase tracking-wide font-bold mb-3">{t('today', lang)}</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <StatCard label="Sales" value={stats.todaySales.toFixed(2)} color="#215c37" />
-          <StatCard label="Transactions" value={stats.todayTransactions.toString()} color="#1f3a68" />
-          <StatCard label="Items Sold" value={stats.todayItemsSold.toString()} color="var(--text-primary)" />
-          <StatCard label="Gross Profit" value={stats.todayProfit.toFixed(2)} color="#8a332e" />
+          <StatCard label={t('salesLabel', lang)} value={stats.todaySales.toFixed(2)} color="#215c37" />
+          <StatCard label={t('transactions', lang)} value={stats.todayTransactions.toString()} color="#1f3a68" />
+          <StatCard label={t('itemsSold', lang)} value={stats.todayItemsSold.toString()} color="var(--text-primary)" />
+          <StatCard label={t('grossProfit', lang)} value={stats.todayProfit.toFixed(2)} color="#8a332e" />
         </div>
       </section>
 
       <section>
-        <h2 className="text-[var(--text-secondary)] text-xs uppercase tracking-wide font-bold mb-3">Inventory</h2>
+        <h2 className="text-[var(--text-secondary)] text-xs uppercase tracking-wide font-bold mb-3">{t('inventory', lang)}</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <StatCard label="Total Products" value={stats.totalProducts.toString()} color="var(--text-primary)" />
-          <StatCard label="Total Units" value={stats.totalStockUnits.toString()} color="var(--text-primary)" />
-          <StatCard label="Cost Value" value={stats.inventoryCostValue.toFixed(2)} color="var(--text-primary)" />
-          <StatCard label="Retail Value" value={stats.inventoryRetailValue.toFixed(2)} color="var(--text-primary)" />
+          <StatCard label={t('totalProducts', lang)} value={stats.totalProducts.toString()} color="var(--text-primary)" />
+          <StatCard label={t('totalUnits', lang)} value={stats.totalStockUnits.toString()} color="var(--text-primary)" />
+          <StatCard label={t('costValue', lang)} value={stats.inventoryCostValue.toFixed(2)} color="var(--text-primary)" />
+          <StatCard label={t('retailValue', lang)} value={stats.inventoryRetailValue.toFixed(2)} color="var(--text-primary)" />
         </div>
       </section>
 
       <section>
-        <h2 className="text-[var(--text-secondary)] text-xs uppercase tracking-wide font-bold mb-3">Alerts</h2>
+        <h2 className="text-[var(--text-secondary)] text-xs uppercase tracking-wide font-bold mb-3">{t('alerts', lang)}</h2>
         <div className="grid grid-cols-2 gap-3">
-          <StatCard label="Low Stock Products" value={stats.lowStockCount.toString()} color={stats.lowStockCount > 0 ? '#8a611a' : 'var(--text-primary)'} />
-          <StatCard label="Out of Stock" value={stats.outOfStockCount.toString()} color={stats.outOfStockCount > 0 ? '#8a332e' : 'var(--text-primary)'} />
+          <StatCard label={t('lowStockProducts', lang)} value={stats.lowStockCount.toString()} color={stats.lowStockCount > 0 ? '#8a611a' : 'var(--text-primary)'} />
+          <StatCard label={t('outOfStock', lang)} value={stats.outOfStockCount.toString()} color={stats.outOfStockCount > 0 ? '#8a332e' : 'var(--text-primary)'} />
         </div>
       </section>
 
       <div className="grid md:grid-cols-2 gap-4">
         <section className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
-          <h2 className="text-[var(--text-primary)] font-semibold mb-3">Best Sellers (30 days)</h2>
+          <h2 className="text-[var(--text-primary)] font-semibold mb-3">{t('bestSellers', lang)}</h2>
           {bestSellers.length === 0 ? (
-            <p className="text-[var(--text-muted)] text-sm">No sales yet</p>
+            <p className="text-[var(--text-muted)] text-sm">{t('noSalesYet', lang)}</p>
           ) : (
             <ul className="space-y-2">
               {bestSellers.map((b, i) => (
                 <li key={i} className="flex justify-between text-[var(--text-secondary)] text-sm">
                   <span>{b.product_name}</span>
-                  <span className="text-[#a17a1f] font-semibold">{b.total_sold} sold</span>
+                  <span className="text-[#a17a1f] font-semibold">{b.total_sold} {t('sold', lang)}</span>
                 </li>
               ))}
             </ul>
@@ -176,16 +176,16 @@ export default function Dashboard() {
         </section>
 
         <section className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
-          <h2 className="text-[var(--text-primary)] font-semibold mb-3">Needs Attention</h2>
+          <h2 className="text-[var(--text-primary)] font-semibold mb-3">{t('needsAttention', lang)}</h2>
           {lowStockProducts.length === 0 ? (
-            <p className="text-[#a17a1f] text-sm">All stock levels healthy</p>
+            <p className="text-[#a17a1f] text-sm">{t('allStockHealthy', lang)}</p>
           ) : (
             <ul className="space-y-2">
               {lowStockProducts.map((p) => (
                 <li key={p.id} className="flex justify-between text-[var(--text-secondary)] text-sm">
                   <span>{p.name}</span>
                   <span className={p.current_stock === 0 ? 'text-[#8a332e] font-semibold' : 'text-[#a17a1f] font-semibold'}>
-                    {p.current_stock} left
+                    {p.current_stock} {t('left', lang)}
                   </span>
                 </li>
               ))}

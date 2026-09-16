@@ -24,31 +24,31 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-[#fdfcfa] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[var(--bg-page)] flex items-center justify-center px-4">
       <form
         onSubmit={handleLogin}
-        className="bg-white p-8 rounded-xl shadow-lg w-full max-w-sm border border-[#ece6da]"
+        className="bg-[var(--bg-card)] p-8 rounded-xl shadow-lg w-full max-w-sm border border-[var(--border)]"
       >
-        <h1 className="text-2xl font-semibold text-[#1a1611] mb-6 text-center" style={{ fontFamily: 'Georgia, serif' }}>
+        <h1 className="text-2xl font-semibold text-[var(--text-primary)] mb-6 text-center" style={{ fontFamily: 'Georgia, serif' }}>
           Store Login
         </h1>
 
-        <label className="block text-sm text-[#5c5448] mb-1">Email</label>
+        <label className="block text-sm text-[var(--text-secondary)] mb-1">Email</label>
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="w-full mb-4 px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611] outline-none focus:ring-2 focus:ring-[#d4a24e]"
+          className="w-full mb-4 px-3 py-2 rounded-lg bg-[var(--bg-input)] border border-[var(--border)] text-[var(--text-primary)] outline-none focus:ring-2 focus:ring-[#d4a24e]"
         />
 
-        <label className="block text-sm text-[#5c5448] mb-1">Password</label>
+        <label className="block text-sm text-[var(--text-secondary)] mb-1">Password</label>
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          className="w-full mb-4 px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611] outline-none focus:ring-2 focus:ring-[#d4a24e]"
+          className="w-full mb-4 px-3 py-2 rounded-lg bg-[var(--bg-input)] border border-[var(--border)] text-[var(--text-primary)] outline-none focus:ring-2 focus:ring-[#d4a24e]"
         />
 
         {error && (

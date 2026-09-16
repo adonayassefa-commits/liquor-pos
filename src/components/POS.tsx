@@ -208,9 +208,9 @@ export default function POS() {
     : []
 
   return (
-    <div className="min-h-screen bg-[#fdfcfa] p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div className="min-h-screen bg-[var(--bg-page)] p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
       <div className="md:col-span-2">
-        <h1 className="text-xl font-semibold text-[#1a1611] mb-4" style={{ fontFamily: 'Georgia, serif' }}>Point of Sale</h1>
+        <h1 className="text-xl font-semibold text-[var(--text-primary)] mb-4" style={{ fontFamily: 'Georgia, serif' }}>Point of Sale</h1>
         <input
           ref={searchInputRef}
           type="text"
@@ -218,7 +218,7 @@ export default function POS() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           onKeyDown={handleSearchKeyDown}
-          className="w-full mb-4 px-3 py-3 rounded-lg bg-white border border-[#ece6da] text-[#1a1611] text-lg outline-none focus:ring-2 focus:ring-[#d4a24e]"
+          className="w-full mb-4 px-3 py-3 rounded-lg bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-primary)] text-lg outline-none focus:ring-2 focus:ring-[#d4a24e]"
         />
 
         {search ? (
@@ -231,66 +231,66 @@ export default function POS() {
                   setSearch('')
                   searchInputRef.current?.focus()
                 }}
-                className="bg-white hover:bg-[#faf8f4] text-left p-3 rounded-lg border border-[#ece6da] shadow-sm"
+                className="bg-[var(--bg-card)] hover:bg-[var(--bg-input)] text-left p-3 rounded-lg border border-[var(--border)] shadow-sm"
               >
-                <p className="text-[#1a1611] font-medium">{p.name}</p>
-                <p className="text-[#6b6156] text-sm">
+                <p className="text-[var(--text-primary)] font-medium">{p.name}</p>
+                <p className="text-[var(--text-muted)] text-sm">
                   {p.selling_price.toFixed(2)} · Stock: {p.current_stock}
                 </p>
               </button>
             ))}
             {filtered.length === 0 && (
-              <p className="text-[#6b6156] sm:col-span-2">No matching products</p>
+              <p className="text-[var(--text-muted)] sm:col-span-2">No matching products</p>
             )}
           </div>
         ) : (
           <>
-            <p className="text-[#6b6156] text-xs uppercase font-semibold mb-2">Quick add</p>
+            <p className="text-[var(--text-muted)] text-xs uppercase font-semibold mb-2">Quick add</p>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
               {favorites.map((p) => (
                 <button
                   key={p.id}
                   onClick={() => addToCart(p)}
                   disabled={p.current_stock < 1}
-                  className="bg-white hover:bg-[#faf8f4] text-left p-3 rounded-lg border border-[#ece6da] shadow-sm disabled:opacity-40"
+                  className="bg-[var(--bg-card)] hover:bg-[var(--bg-input)] text-left p-3 rounded-lg border border-[var(--border)] shadow-sm disabled:opacity-40"
                 >
-                  <p className="text-[#1a1611] font-medium text-sm truncate">{p.name}</p>
-                  <p className="text-[#6b6156] text-xs">
+                  <p className="text-[var(--text-primary)] font-medium text-sm truncate">{p.name}</p>
+                  <p className="text-[var(--text-muted)] text-xs">
                     {p.selling_price.toFixed(2)} · {p.current_stock} left
                   </p>
                 </button>
               ))}
               {favorites.length === 0 && (
-                <p className="text-[#6b6156] col-span-full">No products yet</p>
+                <p className="text-[var(--text-muted)] col-span-full">No products yet</p>
               )}
             </div>
           </>
         )}
       </div>
 
-      <div className="bg-white border border-[#ece6da] rounded-xl p-4 flex flex-col shadow-sm">
-        <h2 className="text-[#1a1611] font-semibold mb-3">Cart</h2>
+      <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4 flex flex-col shadow-sm">
+        <h2 className="text-[var(--text-primary)] font-semibold mb-3">Cart</h2>
 
         <div className="flex-1 overflow-y-auto space-y-2 mb-4">
-          {cart.length === 0 && <p className="text-[#6b6156] text-sm">Cart is empty</p>}
+          {cart.length === 0 && <p className="text-[var(--text-muted)] text-sm">Cart is empty</p>}
           {cart.map((item) => (
-            <div key={item.product.id} className="flex items-center justify-between bg-[#faf8f4] p-2 rounded-lg">
+            <div key={item.product.id} className="flex items-center justify-between bg-[var(--bg-input)] p-2 rounded-lg">
               <div>
-                <p className="text-[#1a1611] text-sm font-medium">{item.product.name}</p>
-                <p className="text-[#6b6156] text-xs">{item.product.selling_price.toFixed(2)} each</p>
+                <p className="text-[var(--text-primary)] text-sm font-medium">{item.product.name}</p>
+                <p className="text-[var(--text-muted)] text-xs">{item.product.selling_price.toFixed(2)} each</p>
               </div>
               <div className="flex items-center gap-2">
-                <button onClick={() => updateQuantity(item.product.id, -1)} className="text-[#1a1611] bg-[#ece6da] w-6 h-6 rounded">-</button>
-                <span className="text-[#1a1611] w-6 text-center">{item.quantity}</span>
-                <button onClick={() => updateQuantity(item.product.id, 1)} className="text-[#1a1611] bg-[#ece6da] w-6 h-6 rounded">+</button>
+                <button onClick={() => updateQuantity(item.product.id, -1)} className="text-[var(--text-primary)] bg-[var(--border)] w-6 h-6 rounded">-</button>
+                <span className="text-[var(--text-primary)] w-6 text-center">{item.quantity}</span>
+                <button onClick={() => updateQuantity(item.product.id, 1)} className="text-[var(--text-primary)] bg-[var(--border)] w-6 h-6 rounded">+</button>
                 <button onClick={() => removeFromCart(item.product.id)} className="text-[#8a332e] text-xs ml-1">✕</button>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="border-t border-[#ece6da] pt-3 space-y-2">
-          <div className="flex justify-between text-[#1a1611] font-bold text-lg">
+        <div className="border-t border-[var(--border)] pt-3 space-y-2">
+          <div className="flex justify-between text-[var(--text-primary)] font-bold text-lg">
             <span>Total</span>
             <span>{total.toFixed(2)}</span>
           </div>
@@ -298,7 +298,7 @@ export default function POS() {
           <select
             value={selectedPaymentId}
             onChange={(e) => setSelectedPaymentId(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
+            className="w-full px-3 py-2 rounded-lg bg-[var(--bg-input)] border border-[var(--border)] text-[var(--text-primary)]"
           >
             {paymentMethods.map((pm) => (
               <option key={pm.id} value={pm.id}>{pm.name}</option>
@@ -310,7 +310,7 @@ export default function POS() {
             placeholder="Amount received"
             value={amountPaid}
             onChange={(e) => setAmountPaid(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
+            className="w-full px-3 py-2 rounded-lg bg-[var(--bg-input)] border border-[var(--border)] text-[var(--text-primary)]"
           />
 
           {paid > 0 && (

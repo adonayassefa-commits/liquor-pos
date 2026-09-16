@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
+import { t, type Language } from '../i18n'
 
 type Sale = {
   id: string
@@ -22,7 +23,7 @@ type SaleItem = {
   products: { name: string } | null
 }
 
-export default function Sales() {
+export default function Sales({ lang = 'en' }: { lang?: Language }) {
   const [sales, setSales] = useState<Sale[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
@@ -63,39 +64,41 @@ export default function Sales() {
   )
 
   return (
-    <div className="min-h-screen bg-[#fdfcfa] p-6">
-      <h1 className="text-xl font-semibold text-[#1a1611] mb-6" style={{ fontFamily: 'Georgia, serif' }}>Sales History</h1>
+    <div className="min-h-screen bg-[var(--bg-page)] p-6">
+      <h1 className="text-xl font-semibold text-[var(--text-primary)] mb-6" style={{ fontFamily: 'Georgia, serif' }}>
+        {t('sales', lang)} {lang === 'en' ? 'History' : ''}
+      </h1>
 
       <input
         type="text"
-        placeholder="Search by receipt number or cashier..."
+        placeholder={t('searchReceiptOrCashier', lang)}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="w-full mb-4 px-3 py-2 rounded-lg bg-white border border-[#ece6da] text-[#1a1611] outline-none focus:ring-2 focus:ring-[#d4a24e]"
+        className="w-full mb-4 px-3 py-2 rounded-lg bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-primary)] outline-none focus:ring-2 focus:ring-[#d4a24e]"
       />
 
       {loading ? (
-        <p className="text-[#6b6156]">Loading...</p>
+        <p className="text-[var(--text-muted)]">{t('loading', lang)}</p>
       ) : filtered.length === 0 ? (
-        <p className="text-[#6b6156]">No sales found.</p>
+        <p className="text-[var(--text-muted)]">{t('noSalesFound', lang)}</p>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-[#ece6da] bg-white shadow-sm">
-          <table className="w-full text-left text-[#1a1611]">
-            <thead className="bg-[#faf8f4] text-[#5c5448] text-sm uppercase">
+        <div className="overflow-x-auto rounded-xl border border-[var(--border)] bg-[var(--bg-card)] shadow-sm">
+          <table className="w-full text-left text-[var(--text-primary)]">
+            <thead className="bg-[var(--bg-sidebar)] text-[var(--text-secondary)] text-sm uppercase">
               <tr>
-                <th className="px-4 py-3">Receipt #</th>
-                <th className="px-4 py-3">Date</th>
-                <th className="px-4 py-3">Cashier</th>
-                <th className="px-4 py-3">Total</th>
-                <th className="px-4 py-3">Status</th>
+                <th className="px-4 py-3">{t('receiptNumber', lang)}</th>
+                <th className="px-4 py-3">{t('date', lang)}</th>
+                <th className="px-4 py-3">{t('cashier', lang)}</th>
+                <th className="px-4 py-3">{t('total', lang)}</th>
+                <th className="px-4 py-3">{t('status', lang)}</th>
                 <th className="px-4 py-3"></th>
               </tr>
             </thead>
             <tbody>
               {filtered.map((s) => (
-                <tr key={s.id} className="border-t border-[#ece6da] hover:bg-[#faf8f4]">
+                <tr key={s.id} className="border-t border-[var(--border)] hover:bg-[var(--bg-sidebar)]">
                   <td className="px-4 py-3 font-mono text-sm">{s.receipt_number}</td>
-                  <td className="px-4 py-3 text-[#6b6156] text-sm">
+                  <td className="px-4 py-3 text-[var(--text-muted)] text-sm">
                     {new Date(s.created_at).toLocaleString()}
                   </td>
                   <td className="px-4 py-3">{s.profiles?.full_name ?? s.profiles?.email ?? '—'}</td>
@@ -115,7 +118,7 @@ export default function Sales() {
                   </td>
                   <td className="px-4 py-3">
                     <button onClick={() => viewSale(s)} className="text-[#a17a1f] hover:underline text-sm">
-                      View
+                      {t('view', lang)}
                     </button>
                   </td>
                 </tr>
@@ -127,32 +130,32 @@ export default function Sales() {
 
       {selectedSale && !showReturnForm && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-          <div className="bg-white p-6 rounded-xl w-full max-w-lg shadow-lg">
+          <div className="bg-[var(--bg-card)] p-6 rounded-xl w-full max-w-lg shadow-lg">
             <div className="flex justify-between items-start mb-4">
               <div>
-                <h2 className="text-lg font-semibold text-[#1a1611]">{selectedSale.receipt_number}</h2>
-                <p className="text-[#6b6156] text-sm">
+                <h2 className="text-lg font-semibold text-[var(--text-primary)]">{selectedSale.receipt_number}</h2>
+                <p className="text-[var(--text-muted)] text-sm">
                   {new Date(selectedSale.created_at).toLocaleString()} ·{' '}
                   {selectedSale.profiles?.full_name ?? selectedSale.profiles?.email}
                 </p>
               </div>
-              <button onClick={() => setSelectedSale(null)} className="text-[#6b6156] hover:text-[#1a1611] text-xl">
+              <button onClick={() => setSelectedSale(null)} className="text-[var(--text-muted)] hover:text-[var(--text-primary)] text-xl">
                 ✕
               </button>
             </div>
 
-            <table className="w-full text-[#1a1611] text-sm mb-4">
-              <thead className="text-[#6b6156] text-left">
+            <table className="w-full text-[var(--text-primary)] text-sm mb-4">
+              <thead className="text-[var(--text-muted)] text-left">
                 <tr>
-                  <th className="pb-2">Product</th>
+                  <th className="pb-2">{t('name', lang)}</th>
                   <th className="pb-2">Qty</th>
-                  <th className="pb-2">Price</th>
-                  <th className="pb-2">Total</th>
+                  <th className="pb-2">{t('price', lang)}</th>
+                  <th className="pb-2">{t('total', lang)}</th>
                 </tr>
               </thead>
               <tbody>
                 {saleItems.map((item) => (
-                  <tr key={item.id} className="border-t border-[#ece6da]">
+                  <tr key={item.id} className="border-t border-[var(--border)]">
                     <td className="py-2">{item.products?.name}</td>
                     <td className="py-2">{item.quantity}</td>
                     <td className="py-2">{item.unit_price.toFixed(2)}</td>
@@ -162,10 +165,10 @@ export default function Sales() {
               </tbody>
             </table>
 
-            <div className="border-t border-[#ece6da] pt-3 space-y-1 text-right mb-4">
-              <p className="text-[#1a1611] font-bold text-lg">Total: {selectedSale.total.toFixed(2)}</p>
-              <p className="text-[#6b6156] text-sm">Paid: {selectedSale.amount_paid.toFixed(2)}</p>
-              <p className="text-[#6b6156] text-sm">Change: {selectedSale.change_due.toFixed(2)}</p>
+            <div className="border-t border-[var(--border)] pt-3 space-y-1 text-right mb-4">
+              <p className="text-[var(--text-primary)] font-bold text-lg">{t('total', lang)}: {selectedSale.total.toFixed(2)}</p>
+              <p className="text-[var(--text-muted)] text-sm">Paid: {selectedSale.amount_paid.toFixed(2)}</p>
+              <p className="text-[var(--text-muted)] text-sm">Change: {selectedSale.change_due.toFixed(2)}</p>
             </div>
 
             <div className="flex gap-2">
@@ -173,14 +176,14 @@ export default function Sales() {
                 onClick={() => window.print()}
                 className="flex-1 bg-gradient-to-br from-[#e8c568] to-[#d4a24e] text-[#5a4a1f] py-2 rounded-lg font-semibold"
               >
-                Print Receipt
+                {t('printReceipt', lang)}
               </button>
               {selectedSale.status === 'completed' && (
                 <button
                   onClick={() => setShowReturnForm(true)}
                   className="flex-1 bg-[#a3413a] hover:bg-[#8a332e] text-white py-2 rounded-lg font-semibold"
                 >
-                  Process Return
+                  {t('processReturn', lang)}
                 </button>
               )}
             </div>
@@ -259,11 +262,11 @@ function ReturnForm({
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-      <div className="bg-white p-6 rounded-xl w-full max-w-lg space-y-3 shadow-lg">
-        <h2 className="text-lg font-semibold text-[#1a1611]">Process Return — {sale.receipt_number}</h2>
+      <div className="bg-[var(--bg-card)] p-6 rounded-xl w-full max-w-lg space-y-3 shadow-lg">
+        <h2 className="text-lg font-semibold text-[var(--text-primary)]">Process Return — {sale.receipt_number}</h2>
 
-        <table className="w-full text-[#1a1611] text-sm">
-          <thead className="text-[#6b6156] text-left">
+        <table className="w-full text-[var(--text-primary)] text-sm">
+          <thead className="text-[var(--text-muted)] text-left">
             <tr>
               <th className="pb-2">Product</th>
               <th className="pb-2">Purchased</th>
@@ -272,7 +275,7 @@ function ReturnForm({
           </thead>
           <tbody>
             {saleItems.map((item) => (
-              <tr key={item.id} className="border-t border-[#ece6da]">
+              <tr key={item.id} className="border-t border-[var(--border)]">
                 <td className="py-2">{item.products?.name}</td>
                 <td className="py-2">{item.quantity}</td>
                 <td className="py-2">
@@ -282,7 +285,7 @@ function ReturnForm({
                     max={item.quantity}
                     value={quantities[item.id] ?? 0}
                     onChange={(e) => setQty(item.id, parseInt(e.target.value) || 0, item.quantity)}
-                    className="w-16 px-2 py-1 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
+                    className="w-16 px-2 py-1 rounded-lg bg-[var(--bg-input)] border border-[var(--border)] text-[var(--text-primary)]"
                   />
                 </td>
               </tr>
@@ -291,21 +294,21 @@ function ReturnForm({
         </table>
 
         <div>
-          <label className="block text-sm text-[#5c5448] mb-1">Reason *</label>
+          <label className="block text-sm text-[var(--text-secondary)] mb-1">Reason *</label>
           <textarea
             value={reason}
             onChange={(e) => setReason(e.target.value)}
             rows={2}
-            className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
+            className="w-full px-3 py-2 rounded-lg bg-[var(--bg-input)] border border-[var(--border)] text-[var(--text-primary)]"
           />
         </div>
 
-        <p className="text-[#1a1611] font-bold text-right">Refund Total: {totalRefund.toFixed(2)}</p>
+        <p className="text-[var(--text-primary)] font-bold text-right">Refund Total: {totalRefund.toFixed(2)}</p>
 
         {error && <p className="text-[#8a332e] text-sm">{error}</p>}
 
         <div className="flex justify-end gap-2">
-          <button onClick={onClose} className="px-4 py-2 rounded-lg text-[#6b6156] hover:bg-[#faf8f4]">
+          <button onClick={onClose} className="px-4 py-2 rounded-lg text-[var(--text-muted)] hover:bg-[var(--bg-input)]">
             Cancel
           </button>
           <button

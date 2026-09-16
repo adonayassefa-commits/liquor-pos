@@ -30,6 +30,7 @@ body {
   --text-muted: #6b6156;
   --scrollbar: #d8d2c8;
   --scrollbar-hover: #c4bcac;
+    --header-bg: linear-gradient(135deg, #1e2a4a, #263759);
 }
 
 .dark {
@@ -43,6 +44,7 @@ body {
   --text-muted: #8a8177;
   --scrollbar: #3a2f22;
   --scrollbar-hover: #4a3d2c;
+  --header-bg: linear-gradient(135deg, #2c2419, #1c1815);
 }
 
 ::-webkit-scrollbar-thumb {

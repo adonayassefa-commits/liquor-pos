@@ -89,9 +89,9 @@ export default function Products({ canEdit }: Props) {
   }
 
   return (
-    <div className="min-h-screen bg-[#fdfcfa] p-6">
+    <div className="min-h-screen bg-[var(--bg-page)] p-6">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-xl font-semibold text-[#1a1611]" style={{ fontFamily: 'Georgia, serif' }}>Products</h1>
+        <h1 className="text-xl font-semibold text-[var(--text-primary)]" style={{ fontFamily: 'Georgia, serif' }}>Products</h1>
         {canEdit && (
           <button
             onClick={() => {
@@ -110,17 +110,17 @@ export default function Products({ canEdit }: Props) {
         placeholder="Search by name, SKU, or barcode..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="w-full mb-4 px-3 py-2 rounded-lg bg-white border border-[#ece6da] text-[#1a1611] outline-none focus:ring-2 focus:ring-[#d4a24e]"
+        className="w-full mb-4 px-3 py-2 rounded-lg bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-primary)] outline-none focus:ring-2 focus:ring-[#d4a24e]"
       />
 
       {loading ? (
-        <p className="text-[#6b6156]">Loading products...</p>
+        <p className="text-[var(--text-muted)]">Loading products...</p>
       ) : filtered.length === 0 ? (
-        <p className="text-[#6b6156]">No products found.</p>
+        <p className="text-[var(--text-muted)]">No products found.</p>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-[#ece6da] bg-white shadow-sm">
-          <table className="w-full text-left text-[#1a1611]">
-            <thead className="bg-[#faf8f4] text-[#5c5448] text-sm uppercase">
+        <div className="overflow-x-auto rounded-xl border border-[var(--border)] bg-[var(--bg-card)] shadow-sm">
+          <table className="w-full text-left text-[var(--text-primary)]">
+            <thead className="bg-[var(--bg-sidebar)] text-[var(--text-secondary)] text-sm uppercase">
               <tr>
                 <th className="px-4 py-3">Name</th>
                 <th className="px-4 py-3">SKU</th>
@@ -133,10 +133,10 @@ export default function Products({ canEdit }: Props) {
             </thead>
             <tbody>
               {filtered.map((p) => (
-                <tr key={p.id} className="border-t border-[#ece6da] hover:bg-[#faf8f4]">
+                <tr key={p.id} className="border-t border-[var(--border)] hover:bg-[var(--bg-sidebar)]">
                   <td className="px-4 py-3 font-medium">{p.name}</td>
-                  <td className="px-4 py-3 text-[#6b6156]">{p.sku ?? '—'}</td>
-                  <td className="px-4 py-3 text-[#6b6156]">{categoryName(p.category_id)}</td>
+                  <td className="px-4 py-3 text-[var(--text-muted)]">{p.sku ?? '—'}</td>
+                  <td className="px-4 py-3 text-[var(--text-muted)]">{categoryName(p.category_id)}</td>
                   <td className="px-4 py-3">{canEdit ? p.cost_price.toFixed(2) : '—'}</td>
                   <td className="px-4 py-3">{p.selling_price.toFixed(2)}</td>
                   <td className="px-4 py-3">
@@ -226,10 +226,10 @@ function BarcodeModal({
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
       <div className="bg-white p-6 rounded-xl w-full max-w-sm text-center shadow-lg print:shadow-none">
-        <p className="text-[#1a1611] font-semibold mb-2">{product.name}</p>
+        <p className="text-black font-semibold mb-2">{product.name}</p>
         <svg ref={svgRef} className="mx-auto" />
         <div className="flex justify-center gap-2 mt-4 print:hidden">
-          <button onClick={onClose} className="px-4 py-2 rounded-lg text-[#6b6156] hover:bg-[#faf8f4]">
+          <button onClick={onClose} className="px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-100">
             Close
           </button>
           <button
@@ -299,48 +299,48 @@ function ProductForm({
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-xl w-full max-w-md space-y-3 shadow-lg"
+        className="bg-[var(--bg-card)] p-6 rounded-xl w-full max-w-md space-y-3 shadow-lg"
       >
-        <h2 className="text-lg font-semibold text-[#1a1611] mb-2">
+        <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-2">
           {product ? 'Edit Product' : 'Add Product'}
         </h2>
 
         <div>
-          <label className="block text-sm text-[#5c5448] mb-1">Name *</label>
+          <label className="block text-sm text-[var(--text-secondary)] mb-1">Name *</label>
           <input
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
+            className="w-full px-3 py-2 rounded-lg bg-[var(--bg-input)] border border-[var(--border)] text-[var(--text-primary)]"
           />
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm text-[#5c5448] mb-1">SKU</label>
+            <label className="block text-sm text-[var(--text-secondary)] mb-1">SKU</label>
             <input
               value={sku}
               onChange={(e) => setSku(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
+              className="w-full px-3 py-2 rounded-lg bg-[var(--bg-input)] border border-[var(--border)] text-[var(--text-primary)]"
             />
           </div>
           <div>
-            <label className="block text-sm text-[#5c5448] mb-1">Barcode</label>
+            <label className="block text-sm text-[var(--text-secondary)] mb-1">Barcode</label>
             <input
               value={barcode}
               onChange={(e) => setBarcode(e.target.value)}
               placeholder="Leave blank to auto-generate"
-              className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
+              className="w-full px-3 py-2 rounded-lg bg-[var(--bg-input)] border border-[var(--border)] text-[var(--text-primary)]"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm text-[#5c5448] mb-1">Category</label>
+          <label className="block text-sm text-[var(--text-secondary)] mb-1">Category</label>
           <select
             value={categoryId}
             onChange={(e) => setCategoryId(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
+            className="w-full px-3 py-2 rounded-lg bg-[var(--bg-input)] border border-[var(--border)] text-[var(--text-primary)]"
           >
             <option value="">— None —</option>
             {categories.map((c) => (
@@ -351,42 +351,42 @@ function ProductForm({
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm text-[#5c5448] mb-1">Cost Price</label>
+            <label className="block text-sm text-[var(--text-secondary)] mb-1">Cost Price</label>
             <input
               type="number" step="0.01"
               value={costPrice}
               onChange={(e) => setCostPrice(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
+              className="w-full px-3 py-2 rounded-lg bg-[var(--bg-input)] border border-[var(--border)] text-[var(--text-primary)]"
             />
           </div>
           <div>
-            <label className="block text-sm text-[#5c5448] mb-1">Selling Price *</label>
+            <label className="block text-sm text-[var(--text-secondary)] mb-1">Selling Price *</label>
             <input
               required type="number" step="0.01"
               value={sellingPrice}
               onChange={(e) => setSellingPrice(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
+              className="w-full px-3 py-2 rounded-lg bg-[var(--bg-input)] border border-[var(--border)] text-[var(--text-primary)]"
             />
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm text-[#5c5448] mb-1">Current Stock</label>
+            <label className="block text-sm text-[var(--text-secondary)] mb-1">Current Stock</label>
             <input
               type="number"
               value={currentStock}
               onChange={(e) => setCurrentStock(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
+              className="w-full px-3 py-2 rounded-lg bg-[var(--bg-input)] border border-[var(--border)] text-[var(--text-primary)]"
             />
           </div>
           <div>
-            <label className="block text-sm text-[#5c5448] mb-1">Reorder Level</label>
+            <label className="block text-sm text-[var(--text-secondary)] mb-1">Reorder Level</label>
             <input
               type="number"
               value={reorderLevel}
               onChange={(e) => setReorderLevel(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
+              className="w-full px-3 py-2 rounded-lg bg-[var(--bg-input)] border border-[var(--border)] text-[var(--text-primary)]"
             />
           </div>
         </div>
@@ -397,7 +397,7 @@ function ProductForm({
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded-lg text-[#6b6156] hover:bg-[#faf8f4]"
+            className="px-4 py-2 rounded-lg text-[var(--text-muted)] hover:bg-[var(--bg-input)]"
           >
             Cancel
           </button>

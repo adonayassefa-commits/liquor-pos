@@ -59,9 +59,9 @@ export default function Inventory() {
   }
 
   return (
-    <div className="min-h-screen bg-[#fdfcfa] p-6">
+    <div className="min-h-screen bg-[var(--bg-page)] p-6">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-xl font-semibold text-[#1a1611]" style={{ fontFamily: 'Georgia, serif' }}>Inventory Movements</h1>
+        <h1 className="text-xl font-semibold text-[var(--text-primary)]" style={{ fontFamily: 'Georgia, serif' }}>Inventory Movements</h1>
         <button
           onClick={() => setShowForm(true)}
           className="bg-gradient-to-br from-[#e8c568] to-[#d4a24e] hover:from-[#dcb95c] hover:to-[#c69144] text-[#5a4a1f] px-4 py-2 rounded-lg font-semibold shadow-sm"
@@ -71,13 +71,13 @@ export default function Inventory() {
       </div>
 
       {loading ? (
-        <p className="text-[#6b6156]">Loading...</p>
+        <p className="text-[var(--text-muted)]">Loading...</p>
       ) : movements.length === 0 ? (
-        <p className="text-[#6b6156]">No movements recorded yet.</p>
+        <p className="text-[var(--text-muted)]">No movements recorded yet.</p>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-[#ece6da] bg-white shadow-sm">
-          <table className="w-full text-left text-[#1a1611] text-sm">
-            <thead className="bg-[#faf8f4] text-[#5c5448] uppercase">
+        <div className="overflow-x-auto rounded-xl border border-[var(--border)] bg-[var(--bg-card)] shadow-sm">
+          <table className="w-full text-left text-[var(--text-primary)] text-sm">
+            <thead className="bg-[var(--bg-sidebar)] text-[var(--text-secondary)] uppercase">
               <tr>
                 <th className="px-4 py-3">Date</th>
                 <th className="px-4 py-3">Product</th>
@@ -90,16 +90,16 @@ export default function Inventory() {
             </thead>
             <tbody>
               {movements.map((m) => (
-                <tr key={m.id} className="border-t border-[#ece6da] hover:bg-[#faf8f4]">
-                  <td className="px-4 py-3 text-[#6b6156]">{new Date(m.created_at).toLocaleString()}</td>
+                <tr key={m.id} className="border-t border-[var(--border)] hover:bg-[var(--bg-sidebar)]">
+                  <td className="px-4 py-3 text-[var(--text-muted)]">{new Date(m.created_at).toLocaleString()}</td>
                   <td className="px-4 py-3">{m.products?.name ?? '—'}</td>
                   <td className="px-4 py-3 capitalize">{m.movement_type}</td>
                   <td className={`px-4 py-3 font-semibold ${m.quantity < 0 ? 'text-[#8a332e]' : 'text-[#1f7a3d]'}`}>
                     {m.quantity > 0 ? '+' : ''}{m.quantity}
                   </td>
-                  <td className="px-4 py-3 text-[#6b6156]">{m.previous_quantity} → {m.new_quantity}</td>
-                  <td className="px-4 py-3 text-[#6b6156]">{m.reason ?? '—'}</td>
-                  <td className="px-4 py-3 text-[#6b6156]">{m.profiles?.full_name ?? m.profiles?.email ?? '—'}</td>
+                  <td className="px-4 py-3 text-[var(--text-muted)]">{m.previous_quantity} → {m.new_quantity}</td>
+                  <td className="px-4 py-3 text-[var(--text-muted)]">{m.reason ?? '—'}</td>
+                  <td className="px-4 py-3 text-[var(--text-muted)]">{m.profiles?.full_name ?? m.profiles?.email ?? '—'}</td>
                 </tr>
               ))}
             </tbody>
@@ -186,15 +186,15 @@ function AdjustStockForm({
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-xl w-full max-w-md space-y-3 shadow-lg">
-        <h2 className="text-lg font-semibold text-[#1a1611] mb-2">Adjust Stock</h2>
+      <form onSubmit={handleSubmit} className="bg-[var(--bg-card)] p-6 rounded-xl w-full max-w-md space-y-3 shadow-lg">
+        <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-2">Adjust Stock</h2>
 
         <div>
-          <label className="block text-sm text-[#5c5448] mb-1">Product *</label>
+          <label className="block text-sm text-[var(--text-secondary)] mb-1">Product *</label>
           <select
             required value={productId}
             onChange={(e) => handleProductChange(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
+            className="w-full px-3 py-2 rounded-lg bg-[var(--bg-input)] border border-[var(--border)] text-[var(--text-primary)]"
           >
             <option value="">— Select —</option>
             {products.map((p) => (
@@ -204,11 +204,11 @@ function AdjustStockForm({
         </div>
 
         <div>
-          <label className="block text-sm text-[#5c5448] mb-1">Adjustment Type *</label>
+          <label className="block text-sm text-[var(--text-secondary)] mb-1">Adjustment Type *</label>
           <select
             value={movementType}
             onChange={(e) => setMovementType(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
+            className="w-full px-3 py-2 rounded-lg bg-[var(--bg-input)] border border-[var(--border)] text-[var(--text-primary)]"
           >
             {MOVEMENT_TYPES.map((t) => (
               <option key={t.value} value={t.value}>{t.label}</option>
@@ -219,45 +219,45 @@ function AdjustStockForm({
         {isStockCount ? (
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm text-[#5c5448] mb-1">Expected</label>
-              <input disabled value={expectedQty ?? ''} className="w-full px-3 py-2 rounded-lg bg-[#f0ece5] border border-[#ece6da] text-[#6b6156]" />
+              <label className="block text-sm text-[var(--text-secondary)] mb-1">Expected</label>
+              <input disabled value={expectedQty ?? ''} className="w-full px-3 py-2 rounded-lg bg-[var(--bg-page)] border border-[var(--border)] text-[var(--text-muted)]" />
             </div>
             <div>
-              <label className="block text-sm text-[#5c5448] mb-1">Actual Count *</label>
+              <label className="block text-sm text-[var(--text-secondary)] mb-1">Actual Count *</label>
               <input
                 type="number" required
                 value={actualQty}
                 onChange={(e) => setActualQty(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
+                className="w-full px-3 py-2 rounded-lg bg-[var(--bg-input)] border border-[var(--border)] text-[var(--text-primary)]"
               />
             </div>
           </div>
         ) : (
           <div>
-            <label className="block text-sm text-[#5c5448] mb-1">
+            <label className="block text-sm text-[var(--text-secondary)] mb-1">
               Quantity Change (use negative to remove stock, e.g. -3)
             </label>
             <input
               type="number" required
               value={quantityChange}
               onChange={(e) => setQuantityChange(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
+              className="w-full px-3 py-2 rounded-lg bg-[var(--bg-input)] border border-[var(--border)] text-[var(--text-primary)]"
             />
           </div>
         )}
 
         {isStockCount && difference !== null && (
-          <p className={`text-sm font-semibold ${difference === 0 ? 'text-[#6b6156]' : difference < 0 ? 'text-[#8a332e]' : 'text-[#1f7a3d]'}`}>
+          <p className={`text-sm font-semibold ${difference === 0 ? 'text-[var(--text-muted)]' : difference < 0 ? 'text-[#8a332e]' : 'text-[#1f7a3d]'}`}>
             Difference: {difference > 0 ? '+' : ''}{difference}
           </p>
         )}
 
         <div>
-          <label className="block text-sm text-[#5c5448] mb-1">Reason *</label>
+          <label className="block text-sm text-[var(--text-secondary)] mb-1">Reason *</label>
           <textarea
             required value={reason}
             onChange={(e) => setReason(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg bg-[#faf8f4] border border-[#ece6da] text-[#1a1611]"
+            className="w-full px-3 py-2 rounded-lg bg-[var(--bg-input)] border border-[var(--border)] text-[var(--text-primary)]"
             rows={2}
           />
         </div>
@@ -265,7 +265,7 @@ function AdjustStockForm({
         {error && <p className="text-[#8a332e] text-sm">{error}</p>}
 
         <div className="flex justify-end gap-2 pt-2">
-          <button type="button" onClick={onClose} className="px-4 py-2 rounded-lg text-[#6b6156] hover:bg-[#faf8f4]">
+          <button type="button" onClick={onClose} className="px-4 py-2 rounded-lg text-[var(--text-muted)] hover:bg-[var(--bg-input)]">
             Cancel
           </button>
           <button type="submit" disabled={saving}
