@@ -172,6 +172,15 @@ export default function Settings() {
                 className="w-full px-3 py-2 rounded-lg bg-[var(--bg-input)] border border-[var(--border)] text-[var(--text-primary)]"
               />
             </Field>
+            <Field label="USD Exchange Rate (1 USD = ? ETB)">
+              <input
+                type="number"
+                step="0.01"
+                value={settings.usd_exchange_rate ?? 130}
+                onChange={(e) => update('usd_exchange_rate', parseFloat(e.target.value) || 0)}
+                className="w-full px-3 py-2 rounded-lg bg-[var(--bg-input)] border border-[var(--border)] text-[var(--text-primary)]"
+              />
+            </Field>
           </div>
         </Section>
 

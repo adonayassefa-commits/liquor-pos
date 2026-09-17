@@ -35,6 +35,7 @@ export default function Products({ canEdit }: Props) {
   const [showForm, setShowForm] = useState(false)
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
   const [printingProduct, setPrintingProduct] = useState<Product | null>(null)
+  const [viewingImage, setViewingImage] = useState<{ url: string; name: string } | null>(null)
 
   useEffect(() => {
     loadCategories()
@@ -138,7 +139,13 @@ export default function Products({ canEdit }: Props) {
                 <tr key={p.id} className="border-t border-[var(--border)] hover:bg-[var(--bg-sidebar)]">
                   <td className="px-4 py-3">
                     {p.image_url ? (
-                      <img src={p.image_url} alt={p.name} className="w-10 h-10 rounded-lg object-cover border border-[var(--border)]" />
+                      <button onClick={() => setViewingImage({ url: p.image_url!, name: p.name })}>
+                        <img
+                          src={p.image_url}
+                          alt={p.name}
+                          className="w-10 h-10 rounded-lg object-cover border border-[var(--border)] hover:opacity-80 cursor-zoom-in"
+                        />
+                      </button>
                     ) : (
                       <div className="w-10 h-10 rounded-lg bg-[var(--bg-input)] border border-[var(--border)]" />
                     )}
@@ -205,6 +212,28 @@ export default function Products({ canEdit }: Props) {
           value={ensureBarcodeValue(printingProduct)}
           onClose={() => setPrintingProduct(null)}
         />
+      )}
+
+      {viewingImage && (
+        <div
+          className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50"
+          onClick={() => setViewingImage(null)}
+        >
+          <div className="max-w-lg w-full">
+            <img
+              src={viewingImage.url}
+              alt={viewingImage.name}
+              className="w-full h-auto rounded-xl shadow-2xl"
+            />
+            <p className="text-white text-center mt-3 font-medium">{viewingImage.name}</p>
+          </div>
+          <button
+            onClick={() => setViewingImage(null)}
+            className="absolute top-4 right-4 text-white bg-white/10 hover:bg-white/20 rounded-full w-9 h-9 flex items-center justify-center text-xl"
+          >
+            ✕
+          </button>
+        </div>
       )}
     </div>
   )

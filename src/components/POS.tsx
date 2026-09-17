@@ -208,9 +208,9 @@ export default function POS() {
     : []
 
   return (
-    <div className="min-h-screen bg-[var(--bg-page)] p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div className="md:col-span-2">
-        <h1 className="text-xl font-semibold text-[var(--text-primary)] mb-4" style={{ fontFamily: 'Georgia, serif' }}>Point of Sale</h1>
+    <div className="h-full p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="md:col-span-2 flex flex-col min-h-0">
+        <h1 className="text-xl font-semibold text-[var(--text-primary)] mb-4 shrink-0" style={{ fontFamily: 'Georgia, serif' }}>Point of Sale</h1>
         <input
           ref={searchInputRef}
           type="text"
@@ -218,60 +218,62 @@ export default function POS() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           onKeyDown={handleSearchKeyDown}
-          className="w-full mb-4 px-3 py-3 rounded-lg bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-primary)] text-lg outline-none focus:ring-2 focus:ring-[#d4a24e]"
+          className="w-full mb-4 px-3 py-3 rounded-lg bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-primary)] text-lg outline-none focus:ring-2 focus:ring-[#d4a24e] shrink-0"
         />
 
-        {search ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            {filtered.map((p) => (
-              <button
-                key={p.id}
-                onClick={() => {
-                  addToCart(p)
-                  setSearch('')
-                  searchInputRef.current?.focus()
-                }}
-                className="bg-[var(--bg-card)] hover:bg-[var(--bg-input)] text-left p-3 rounded-lg border border-[var(--border)] shadow-sm"
-              >
-                <p className="text-[var(--text-primary)] font-medium">{p.name}</p>
-                <p className="text-[var(--text-muted)] text-sm">
-                  {p.selling_price.toFixed(2)} · Stock: {p.current_stock}
-                </p>
-              </button>
-            ))}
-            {filtered.length === 0 && (
-              <p className="text-[var(--text-muted)] sm:col-span-2">No matching products</p>
-            )}
-          </div>
-        ) : (
-          <>
-            <p className="text-[var(--text-muted)] text-xs uppercase font-semibold mb-2">Quick add</p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
-              {favorites.map((p) => (
+        <div className="flex-1 overflow-y-auto min-h-0">
+          {search ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {filtered.map((p) => (
                 <button
                   key={p.id}
-                  onClick={() => addToCart(p)}
-                  disabled={p.current_stock < 1}
-                  className="bg-[var(--bg-card)] hover:bg-[var(--bg-input)] text-left p-3 rounded-lg border border-[var(--border)] shadow-sm disabled:opacity-40"
+                  onClick={() => {
+                    addToCart(p)
+                    setSearch('')
+                    searchInputRef.current?.focus()
+                  }}
+                  className="bg-[var(--bg-card)] hover:bg-[var(--bg-input)] text-left p-3 rounded-lg border border-[var(--border)] shadow-sm"
                 >
-                  <p className="text-[var(--text-primary)] font-medium text-sm truncate">{p.name}</p>
-                  <p className="text-[var(--text-muted)] text-xs">
-                    {p.selling_price.toFixed(2)} · {p.current_stock} left
+                  <p className="text-[var(--text-primary)] font-medium">{p.name}</p>
+                  <p className="text-[var(--text-muted)] text-sm">
+                    {p.selling_price.toFixed(2)} · Stock: {p.current_stock}
                   </p>
                 </button>
               ))}
-              {favorites.length === 0 && (
-                <p className="text-[var(--text-muted)] col-span-full">No products yet</p>
+              {filtered.length === 0 && (
+                <p className="text-[var(--text-muted)] sm:col-span-2">No matching products</p>
               )}
             </div>
-          </>
-        )}
+          ) : (
+            <>
+              <p className="text-[var(--text-muted)] text-xs uppercase font-semibold mb-2">Quick add</p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+                {favorites.map((p) => (
+                  <button
+                    key={p.id}
+                    onClick={() => addToCart(p)}
+                    disabled={p.current_stock < 1}
+                    className="bg-[var(--bg-card)] hover:bg-[var(--bg-input)] text-left p-3 rounded-lg border border-[var(--border)] shadow-sm disabled:opacity-40"
+                  >
+                    <p className="text-[var(--text-primary)] font-medium text-sm truncate">{p.name}</p>
+                    <p className="text-[var(--text-muted)] text-xs">
+                      {p.selling_price.toFixed(2)} · {p.current_stock} left
+                    </p>
+                  </button>
+                ))}
+                {favorites.length === 0 && (
+                  <p className="text-[var(--text-muted)] col-span-full">No products yet</p>
+                )}
+              </div>
+            </>
+          )}
+        </div>
       </div>
 
-      <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4 flex flex-col shadow-sm">
-        <h2 className="text-[var(--text-primary)] font-semibold mb-3">Cart</h2>
+      <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4 flex flex-col shadow-sm min-h-0">
+        <h2 className="text-[var(--text-primary)] font-semibold mb-3 shrink-0">Cart</h2>
 
-        <div className="flex-1 overflow-y-auto space-y-2 mb-4">
+        <div className="flex-1 overflow-y-auto space-y-2 mb-4 min-h-0">
           {cart.length === 0 && <p className="text-[var(--text-muted)] text-sm">Cart is empty</p>}
           {cart.map((item) => (
             <div key={item.product.id} className="flex items-center justify-between bg-[var(--bg-input)] p-2 rounded-lg">
@@ -289,7 +291,7 @@ export default function POS() {
           ))}
         </div>
 
-        <div className="border-t border-[var(--border)] pt-3 space-y-2">
+        <div className="border-t border-[var(--border)] pt-3 space-y-2 shrink-0">
           <div className="flex justify-between text-[var(--text-primary)] font-bold text-lg">
             <span>Total</span>
             <span>{total.toFixed(2)}</span>

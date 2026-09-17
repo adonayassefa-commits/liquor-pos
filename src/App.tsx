@@ -3,7 +3,7 @@ import type { Session } from '@supabase/supabase-js'
 import {
   LayoutGrid, ShoppingCart, Receipt, Package, ClipboardList,
   Truck, Factory, Users, CreditCard, BarChart3, LogOut, MoreHorizontal, Search, X,
-  Settings as SettingsIcon, FileBarChart, Sun, Moon, Bell,
+  Settings as SettingsIcon, FileBarChart, Sun, Moon, Bell, Plus, Menu,
 } from 'lucide-react'
 import { supabase } from './lib/supabaseClient'
 import { getLanguage, setLanguage as saveLanguage, t, type Language } from './i18n'
@@ -42,6 +42,7 @@ function App() {
   const [showMobileSearch, setShowMobileSearch] = useState(false)
   const [lang, setLang] = useState<Language>(getLanguage())
   const [theme, setThemeState] = useState<Theme>(getTheme())
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
   function toggleLanguage() {
     const next = lang === 'en' ? 'am' : 'en'
@@ -137,7 +138,7 @@ function App() {
 
   const visibleNav = navItems.filter((n) => n.show)
   const primaryMobileItems = visibleNav.slice(0, 4)
-  const currentLabel = visibleNav.find((n) => n.key === page)?.label ?? ''
+  const sidebarItems = sidebarCollapsed ? primaryMobileItems : visibleNav
 
   function renderPage() {
     switch (page) {
@@ -171,27 +172,27 @@ function App() {
   return (
     <div className="h-screen md:flex overflow-hidden" style={{ background: 'var(--bg-page)' }}>
       <aside
-        className="hidden md:flex md:w-56 md:flex-col p-3 h-screen shrink-0"
+        className={`hidden md:flex md:flex-col p-3 h-screen shrink-0 transition-all duration-200 ${sidebarCollapsed ? 'md:w-16' : 'md:w-56'}`}
         style={{ background: 'var(--bg-sidebar)', borderRight: '1px solid var(--border)' }}
       >
-        <div className="px-2 py-2 mb-2">
-          <button
-            onClick={() => setPage('dashboard')}
-            className="font-semibold text-sm text-left"
-            style={{ color: 'var(--text-primary)', fontFamily: 'Georgia, serif' }}
-          >
-            Liquor<span className="text-[#a17a1f]">POS</span>
-          </button>
-        </div>
-        <nav className="flex flex-col gap-1 flex-1 overflow-y-auto">
-          {visibleNav.map((item) => {
+        <button
+          onClick={() => setSidebarCollapsed((c) => !c)}
+          title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          className={`flex items-center gap-2 py-2 mb-1 rounded-lg shrink-0 ${sidebarCollapsed ? 'justify-center px-2' : 'px-3'}`}
+          style={{ color: 'var(--text-secondary)' }}
+        >
+          <Menu size={18} />
+        </button>
+        <nav className="flex flex-col gap-1 flex-1 overflow-y-auto overflow-x-hidden">
+          {sidebarItems.map((item) => {
             const Icon = item.icon
             const active = page === item.key
             return (
               <button
                 key={item.key}
                 onClick={() => setPage(item.key)}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-left transition-colors shrink-0"
+                title={sidebarCollapsed ? item.label : undefined}
+                className={`flex items-center gap-2 py-2 rounded-lg text-sm text-left transition-colors shrink-0 ${sidebarCollapsed ? 'justify-center px-2' : 'px-3'}`}
                 style={
                   active
                     ? { background: 'linear-gradient(135deg, #e8c568, #d4a24e)', color: '#5a4a1f', fontWeight: 600 }
@@ -199,37 +200,43 @@ function App() {
                 }
               >
                 <Icon size={16} />
-                {item.label}
+                {!sidebarCollapsed && item.label}
               </button>
             )
           })}
         </nav>
         <button
           onClick={handleLogout}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm shrink-0"
+          title={sidebarCollapsed ? t('logOut', lang) : undefined}
+          className={`flex items-center gap-2 py-2 rounded-lg text-sm shrink-0 ${sidebarCollapsed ? 'justify-center px-2' : 'px-3'}`}
           style={{ color: '#a3413a' }}
         >
           <LogOut size={16} />
-          {t('logOut', lang)}
+          {!sidebarCollapsed && t('logOut', lang)}
         </button>
       </aside>
 
       <div className="flex-1 flex flex-col min-w-0 h-screen">
         <div
-          className="flex flex-nowrap items-center justify-end px-4 md:px-6 py-3 shrink-0 border-b-2 border-[#d4a24e] gap-3"
+          className="flex flex-nowrap items-center px-4 md:px-6 py-3 shrink-0 border-b-2 border-[#d4a24e] gap-3"
           style={{ background: 'var(--header-bg)' }}
         >
-          <div className="md:hidden mr-auto">
-            <button onClick={() => setPage('dashboard')} className="font-semibold text-sm text-white" style={{ fontFamily: 'Georgia, serif' }}>
-              Liquor<span className="text-[#f3dfa8]">POS</span>
-            </button>
-          </div>
+          <button
+            onClick={() => setPage('dashboard')}
+            className="font-bold text-lg md:text-xl text-white shrink-0"
+            style={{ fontFamily: 'Georgia, serif' }}
+          >
+            {t('brandPrefix', lang)}<span className="text-[#f3dfa8]">POS</span>
+          </button>
 
-          <div className="hidden md:block">
-            <GlobalSearch onNavigate={setPage} placeholder={t('search', lang)} />
+          <div className="flex-1 flex justify-center min-w-0">
+            <div className="hidden md:block w-full max-w-md">
+              <GlobalSearch onNavigate={setPage} placeholder={t('search', lang)} />
+            </div>
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
+            <TodaySalesTicker onNewSale={() => setPage('pos')} lang={lang} />
             <NotificationBell onNavigate={setPage} />
             <button
               onClick={toggleTheme}
@@ -252,13 +259,6 @@ function App() {
             </button>
             <AccountMenu profile={profile} email={session.user.email!} onLogout={handleLogout} logOutLabel={t('logOut', lang)} />
           </div>
-        </div>
-
-        <div
-          className="hidden md:block px-6 py-2 shrink-0"
-          style={{ borderBottom: '1px solid var(--border)' }}
-        >
-          <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{currentLabel}</span>
         </div>
 
         <div className="flex-1 pb-20 md:pb-0 overflow-y-auto">
@@ -335,6 +335,42 @@ function App() {
           </div>
         </div>
       )}
+    </div>
+  )
+}
+
+function TodaySalesTicker({ onNewSale, lang }: { onNewSale: () => void; lang: Language }) {
+  const [total, setTotal] = useState<number | null>(null)
+
+  useEffect(() => {
+    load()
+    const interval = setInterval(load, 60000)
+    return () => clearInterval(interval)
+  }, [])
+
+  async function load() {
+    const todayStart = new Date()
+    todayStart.setHours(0, 0, 0, 0)
+    const { data } = await supabase
+      .from('sales')
+      .select('total')
+      .gte('created_at', todayStart.toISOString())
+    setTotal((data ?? []).reduce((sum, s) => sum + Number(s.total), 0))
+  }
+
+  return (
+    <div className="hidden sm:flex items-center gap-3 shrink-0">
+      <div className="text-white/90 text-xs">
+        <span className="uppercase tracking-wide opacity-75">{t('today', lang)}</span>{' '}
+        <span className="font-bold text-sm">{total !== null ? total.toFixed(2) : '—'} ETB</span>
+      </div>
+      <button
+        onClick={onNewSale}
+        className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full bg-white/15 hover:bg-white/25 border border-white/25 text-white"
+      >
+        <Plus size={12} />
+        New Sale
+      </button>
     </div>
   )
 }
@@ -479,7 +515,7 @@ function GlobalSearch({
   }
 
   return (
-    <div className="relative w-64">
+    <div className="relative w-full">
       <div className="flex items-center bg-white/15 border border-white/25 rounded-full px-3 py-1.5">
         <Search size={14} className="text-white/80 mr-2 shrink-0" />
         <input

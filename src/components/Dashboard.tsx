@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
 import { formatEthiopianDate } from '../ethiopianDate'
 import { t, type Language } from '../i18n'
+import Money from './Money'
 
 type Stats = {
   todaySales: number
@@ -113,14 +114,14 @@ export default function Dashboard({ lang = 'en' }: { lang?: Language }) {
 
   if (loading || !stats) {
     return (
-      <div className="min-h-screen bg-[var(--bg-page)] p-6">
+      <div className="min-h-full bg-[var(--bg-page)] p-6">
         <p className="text-[var(--text-muted)]">{t('loadingDashboard', lang)}</p>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-[var(--bg-page)] p-6 space-y-8">
+    <div className="min-h-full bg-[var(--bg-page)] p-6 space-y-8">
       <div>
         <h1 className="text-xl font-semibold text-[var(--text-primary)]" style={{ fontFamily: 'Georgia, serif' }}>
           {t('welcomeBack', lang)}
@@ -133,10 +134,10 @@ export default function Dashboard({ lang = 'en' }: { lang?: Language }) {
       <section>
         <h2 className="text-[var(--text-secondary)] text-xs uppercase tracking-wide font-bold mb-3">{t('today', lang)}</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <StatCard label={t('salesLabel', lang)} value={stats.todaySales.toFixed(2)} color="#215c37" />
+          <MoneyStatCard label={t('salesLabel', lang)} amount={stats.todaySales} color="#215c37" />
           <StatCard label={t('transactions', lang)} value={stats.todayTransactions.toString()} color="#1f3a68" />
           <StatCard label={t('itemsSold', lang)} value={stats.todayItemsSold.toString()} color="var(--text-primary)" />
-          <StatCard label={t('grossProfit', lang)} value={stats.todayProfit.toFixed(2)} color="#8a332e" />
+          <MoneyStatCard label={t('grossProfit', lang)} amount={stats.todayProfit} color="#8a332e" />
         </div>
       </section>
 
@@ -145,8 +146,8 @@ export default function Dashboard({ lang = 'en' }: { lang?: Language }) {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <StatCard label={t('totalProducts', lang)} value={stats.totalProducts.toString()} color="var(--text-primary)" />
           <StatCard label={t('totalUnits', lang)} value={stats.totalStockUnits.toString()} color="var(--text-primary)" />
-          <StatCard label={t('costValue', lang)} value={stats.inventoryCostValue.toFixed(2)} color="var(--text-primary)" />
-          <StatCard label={t('retailValue', lang)} value={stats.inventoryRetailValue.toFixed(2)} color="var(--text-primary)" />
+          <MoneyStatCard label={t('costValue', lang)} amount={stats.inventoryCostValue} color="var(--text-primary)" />
+          <MoneyStatCard label={t('retailValue', lang)} amount={stats.inventoryRetailValue} color="var(--text-primary)" />
         </div>
       </section>
 
@@ -203,6 +204,17 @@ function StatCard({ label, value, color }: { label: string; value: string; color
       <p className="text-[var(--text-secondary)] text-xs uppercase tracking-wide font-semibold mb-1">{label}</p>
       <p className="text-xl font-semibold" style={{ color }}>
         {value}
+      </p>
+    </div>
+  )
+}
+
+function MoneyStatCard({ label, amount, color }: { label: string; amount: number; color: string }) {
+  return (
+    <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4 shadow-sm">
+      <p className="text-[var(--text-secondary)] text-xs uppercase tracking-wide font-semibold mb-1">{label}</p>
+      <p className="text-xl font-semibold" style={{ color }}>
+        <Money amount={amount} />
       </p>
     </div>
   )

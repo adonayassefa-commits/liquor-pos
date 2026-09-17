@@ -62,6 +62,7 @@ export const translations = {
     sold: 'sold',
     left: 'left',
     loadingDashboard: 'Loading dashboard...',
+    brandPrefix: 'Liquor',
   },
   am: {
     dashboard: 'ዳሽቦርድ',
@@ -124,6 +125,7 @@ export const translations = {
     sold: 'ተሽጧል',
     left: 'ቀርቷል',
     loadingDashboard: 'ዳሽቦርድ በመጫን ላይ...',
+    brandPrefix: 'መጠጥ',
   },
 } as const
 
