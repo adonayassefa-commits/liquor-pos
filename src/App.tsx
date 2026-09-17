@@ -135,15 +135,17 @@ function App() {
     { key: 'expenses', label: t('expenses', lang), icon: CreditCard, show: canManageExpenses },
   ]
 
-  const procurementGroupItems: NavItem[] = [
+    const procurementGroupAll: NavItem[] = [
     { key: 'purchases', label: t('purchases', lang), icon: Truck, show: canManagePurchasing },
     { key: 'suppliers', label: t('suppliers', lang), icon: Factory, show: canManagePurchasing },
-  ].filter((i) => i.show)
+  ]
+  const procurementGroupItems = procurementGroupAll.filter((i) => i.show)
 
-  const insightsGroupItems: NavItem[] = [
+  const insightsGroupAll: NavItem[] = [
     { key: 'reports', label: t('reports', lang), icon: BarChart3, show: canSeeReports },
     { key: 'zreport', label: t('endOfDay', lang), icon: FileBarChart, show: canSeeReports },
-  ].filter((i) => i.show)
+  ]
+  const insightsGroupItems = insightsGroupAll.filter((i) => i.show)
 
   const visibleFlatItems = flatNavItems.filter((n) => n.show)
   const primaryMobileItems = visibleFlatItems.slice(0, 4)
@@ -701,9 +703,10 @@ function AccountMenu({
             )}
             <button
               onClick={onLogout}
-              className="w-full text-left px-4 py-2 text-sm hover:opacity-80"
+              className="w-full text-left px-4 py-2 text-sm hover:opacity-80 flex items-center gap-2"
               style={{ color: '#a3413a' }}
             >
+              <LogOut size={14} />
               {logOutLabel}
             </button>
           </div>

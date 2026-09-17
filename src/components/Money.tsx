@@ -5,22 +5,28 @@ let cachedRate: number | null = null
 let ratePromise: Promise<number> | null = null
 
 async function fetchRate(): Promise<number> {
-  if (cachedRate !== null) return cachedRate
+  if (cachedRate !== null) {
+    const r: number = cachedRate
+    return r
+  }
   if (ratePromise) return ratePromise
-  ratePromise = supabase
-    .from('settings')
-    .select('value')
-    .eq('key', 'usd_exchange_rate')
-    .single()
-    .then(({ data }) => {
+
+  ratePromise = (async () => {
+    try {
+      const { data } = await supabase
+        .from('settings')
+        .select('value')
+        .eq('key', 'usd_exchange_rate')
+        .single()
       const rate = data?.value ? Number(data.value) : 130
       cachedRate = rate
       return rate
-    })
-    .catch(() => {
+    } catch {
       cachedRate = 130
       return 130
-    })
+    }
+  })()
+
   return ratePromise
 }
 
@@ -35,12 +41,12 @@ export default function Money({ amount }: { amount: number }) {
 
   useEffect(() => {
     if (rate === null) {
-      fetchRate().then(setRate)
+      fetchRate().then((r) => setRate(r))
     }
   }, [rate])
 
   const birr = amount.toFixed(2)
-  const usd = rate ? (amount / rate).toFixed(2) : null
+  const usd = rate !== null ? (amount / rate).toFixed(2) : null
 
   return (
     <span className="relative inline-block">
