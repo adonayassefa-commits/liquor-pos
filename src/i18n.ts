@@ -63,6 +63,8 @@ export const translations = {
     left: 'left',
     loadingDashboard: 'Loading dashboard...',
     brandPrefix: 'Liquor',
+    purchasingGroup: 'Vendor',
+    insightsGroup: 'Insights',
   },
   am: {
     dashboard: 'ዳሽቦርድ',
@@ -126,6 +128,8 @@ export const translations = {
     left: 'ቀርቷል',
     loadingDashboard: 'ዳሽቦርድ በመጫን ላይ...',
     brandPrefix: 'መጠጥ',
+    purchasingGroup: 'ግዢ',
+    insightsGroup: 'ትንታኔ',
   },
 } as const
 

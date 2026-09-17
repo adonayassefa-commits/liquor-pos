@@ -3,7 +3,7 @@ import type { Session } from '@supabase/supabase-js'
 import {
   LayoutGrid, ShoppingCart, Receipt, Package, ClipboardList,
   Truck, Factory, Users, CreditCard, BarChart3, LogOut, MoreHorizontal, Search, X,
-  Settings as SettingsIcon, FileBarChart, Sun, Moon, Bell, Plus, Menu,
+  Settings as SettingsIcon, FileBarChart, Sun, Moon, Bell, Plus, Menu, ChevronDown, ChevronRight,
 } from 'lucide-react'
 import { supabase } from './lib/supabaseClient'
 import { getLanguage, setLanguage as saveLanguage, t, type Language } from './i18n'
@@ -33,6 +33,8 @@ type Page =
   | 'dashboard' | 'pos' | 'products' | 'suppliers' | 'purchases'
   | 'sales' | 'inventory' | 'reports' | 'customers' | 'expenses' | 'settings' | 'zreport'
 
+type NavItem = { key: Page; label: string; icon: any; show: boolean }
+
 function App() {
   const [session, setSession] = useState<Session | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
@@ -43,6 +45,8 @@ function App() {
   const [lang, setLang] = useState<Language>(getLanguage())
   const [theme, setThemeState] = useState<Theme>(getTheme())
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [insightsExpanded, setInsightsExpanded] = useState(false)
+  const [procurementExpanded, setProcurementExpanded] = useState(false)
 
   function toggleLanguage() {
     const next = lang === 'en' ? 'am' : 'en'
@@ -121,24 +125,29 @@ function App() {
   const canManageExpenses = profile?.role === 'admin' || profile?.role === 'manager'
   const isAdmin = profile?.role === 'admin'
 
-  const navItems: { key: Page; label: string; icon: any; show: boolean }[] = [
+  const flatNavItems: NavItem[] = [
     { key: 'dashboard', label: t('dashboard', lang), icon: LayoutGrid, show: canSeeDashboard },
     { key: 'pos', label: t('pos', lang), icon: ShoppingCart, show: true },
     { key: 'sales', label: t('sales', lang), icon: Receipt, show: canSeeSales },
     { key: 'products', label: t('products', lang), icon: Package, show: true },
     { key: 'inventory', label: t('inventory', lang), icon: ClipboardList, show: canSeeInventory },
-    { key: 'purchases', label: t('purchases', lang), icon: Truck, show: canManagePurchasing },
-    { key: 'suppliers', label: t('suppliers', lang), icon: Factory, show: canManagePurchasing },
     { key: 'customers', label: t('customers', lang), icon: Users, show: true },
     { key: 'expenses', label: t('expenses', lang), icon: CreditCard, show: canManageExpenses },
-    { key: 'reports', label: t('reports', lang), icon: BarChart3, show: canSeeReports },
-    { key: 'zreport', label: t('endOfDay', lang), icon: FileBarChart, show: canSeeReports },
-    { key: 'settings', label: t('settings', lang), icon: SettingsIcon, show: isAdmin },
   ]
 
-  const visibleNav = navItems.filter((n) => n.show)
-  const primaryMobileItems = visibleNav.slice(0, 4)
-  const sidebarItems = sidebarCollapsed ? primaryMobileItems : visibleNav
+  const procurementGroupItems: NavItem[] = [
+    { key: 'purchases', label: t('purchases', lang), icon: Truck, show: canManagePurchasing },
+    { key: 'suppliers', label: t('suppliers', lang), icon: Factory, show: canManagePurchasing },
+  ].filter((i) => i.show)
+
+  const insightsGroupItems: NavItem[] = [
+    { key: 'reports', label: t('reports', lang), icon: BarChart3, show: canSeeReports },
+    { key: 'zreport', label: t('endOfDay', lang), icon: FileBarChart, show: canSeeReports },
+  ].filter((i) => i.show)
+
+  const visibleFlatItems = flatNavItems.filter((n) => n.show)
+  const primaryMobileItems = visibleFlatItems.slice(0, 4)
+  const allVisibleForMoreSheet = [...visibleFlatItems, ...procurementGroupItems, ...insightsGroupItems]
 
   function renderPage() {
     switch (page) {
@@ -169,6 +178,76 @@ function App() {
     }
   }
 
+  function CollapsibleGroup({
+    label, icon: GroupIcon, items, expanded, onToggle, activeKeys,
+  }: {
+    label: string
+    icon: any
+    items: NavItem[]
+    expanded: boolean
+    onToggle: () => void
+    activeKeys: Page[]
+  }) {
+    if (items.length === 0) return null
+
+    if (sidebarCollapsed) {
+      const isActive = activeKeys.includes(page)
+      return (
+        <button
+          onClick={() => setPage(items[0].key)}
+          title={label}
+          className="flex items-center justify-center gap-2 px-2 py-2 rounded-lg text-sm shrink-0"
+          style={
+            isActive
+              ? { background: 'linear-gradient(135deg, #e8c568, #d4a24e)', color: '#5a4a1f' }
+              : { color: 'var(--text-secondary)' }
+          }
+        >
+          <GroupIcon size={16} />
+        </button>
+      )
+    }
+
+    return (
+      <div className="mt-1">
+        <button
+          onClick={onToggle}
+          className="flex items-center justify-between w-full gap-2 px-3 py-2 rounded-lg text-sm text-left"
+          style={{ color: 'var(--text-secondary)' }}
+        >
+          <span className="flex items-center gap-2">
+            <GroupIcon size={16} />
+            {label}
+          </span>
+          {expanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+        </button>
+        {expanded && (
+          <div className="flex flex-col gap-1 pl-6 mt-1">
+            {items.map((item) => {
+              const Icon = item.icon
+              const active = page === item.key
+              return (
+                <button
+                  key={item.key}
+                  onClick={() => setPage(item.key)}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm text-left"
+                  style={
+                    active
+                      ? { background: 'linear-gradient(135deg, #e8c568, #d4a24e)', color: '#5a4a1f', fontWeight: 600 }
+                      : { color: 'var(--text-secondary)' }
+                  }
+                >
+                  <Icon size={14} />
+                  {item.label}
+                </button>
+              )
+            })}
+          </div>
+        )}
+      </div>
+    )
+  }
+
   return (
     <div className="h-screen md:flex overflow-hidden" style={{ background: 'var(--bg-page)' }}>
       <aside
@@ -184,7 +263,7 @@ function App() {
           <Menu size={18} />
         </button>
         <nav className="flex flex-col gap-1 flex-1 overflow-y-auto overflow-x-hidden">
-          {sidebarItems.map((item) => {
+          {(sidebarCollapsed ? primaryMobileItems : visibleFlatItems).map((item) => {
             const Icon = item.icon
             const active = page === item.key
             return (
@@ -204,16 +283,25 @@ function App() {
               </button>
             )
           })}
+
+          <CollapsibleGroup
+            label={t('purchasingGroup', lang)}
+            icon={Truck}
+            items={procurementGroupItems}
+            expanded={procurementExpanded}
+            onToggle={() => setProcurementExpanded((e) => !e)}
+            activeKeys={['purchases', 'suppliers']}
+          />
+
+          <CollapsibleGroup
+            label={t('insightsGroup', lang)}
+            icon={BarChart3}
+            items={insightsGroupItems}
+            expanded={insightsExpanded}
+            onToggle={() => setInsightsExpanded((e) => !e)}
+            activeKeys={['reports', 'zreport']}
+          />
         </nav>
-        <button
-          onClick={handleLogout}
-          title={sidebarCollapsed ? t('logOut', lang) : undefined}
-          className={`flex items-center gap-2 py-2 rounded-lg text-sm shrink-0 ${sidebarCollapsed ? 'justify-center px-2' : 'px-3'}`}
-          style={{ color: '#a3413a' }}
-        >
-          <LogOut size={16} />
-          {!sidebarCollapsed && t('logOut', lang)}
-        </button>
       </aside>
 
       <div className="flex-1 flex flex-col min-w-0 h-screen">
@@ -257,7 +345,15 @@ function App() {
             >
               <Search size={14} />
             </button>
-            <AccountMenu profile={profile} email={session.user.email!} onLogout={handleLogout} logOutLabel={t('logOut', lang)} />
+            <AccountMenu
+              profile={profile}
+              email={session.user.email!}
+              onLogout={handleLogout}
+              logOutLabel={t('logOut', lang)}
+              isAdmin={isAdmin}
+              onOpenSettings={() => setPage('settings')}
+              settingsLabel={t('settings', lang)}
+            />
           </div>
         </div>
 
@@ -302,7 +398,7 @@ function App() {
             style={{ background: 'var(--bg-sidebar)' }}
             onClick={(e) => e.stopPropagation()}
           >
-            {visibleNav.map((item) => {
+            {allVisibleForMoreSheet.map((item) => {
               const Icon = item.icon
               return (
                 <button
@@ -556,8 +652,16 @@ function GlobalSearch({
 }
 
 function AccountMenu({
-  profile, email, onLogout, logOutLabel,
-}: { profile: Profile | null; email: string; onLogout: () => void; logOutLabel: string }) {
+  profile, email, onLogout, logOutLabel, isAdmin, onOpenSettings, settingsLabel,
+}: {
+  profile: Profile | null
+  email: string
+  onLogout: () => void
+  logOutLabel: string
+  isAdmin: boolean
+  onOpenSettings: () => void
+  settingsLabel: string
+}) {
   const [open, setOpen] = useState(false)
   const initials = (profile?.full_name ?? email)
     .split(' ')
@@ -585,6 +689,16 @@ function AccountMenu({
               <p className="text-sm font-medium truncate" style={{ color: 'var(--text-primary)' }}>{profile?.full_name ?? email}</p>
               <p className="text-xs uppercase" style={{ color: 'var(--text-muted)' }}>{profile?.role}</p>
             </div>
+            {isAdmin && (
+              <button
+                onClick={() => { onOpenSettings(); setOpen(false) }}
+                className="w-full text-left px-4 py-2 text-sm hover:opacity-80 flex items-center gap-2"
+                style={{ color: 'var(--text-primary)' }}
+              >
+                <SettingsIcon size={14} />
+                {settingsLabel}
+              </button>
+            )}
             <button
               onClick={onLogout}
               className="w-full text-left px-4 py-2 text-sm hover:opacity-80"
